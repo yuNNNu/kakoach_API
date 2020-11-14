@@ -1,6 +1,8 @@
 /*=============================================
 =         INSTANCIAS DE REQUERIMIENTOS        =
 =============================================*/
+require('./config');
+
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -17,15 +19,11 @@ const app = express();
 app.use(bodyParser.urlencoded({ limit:'10mb', extend:true}));
 app.use(bodyParser.json({limit:'10mb', extend:true}));
 
-
 /*=============================================
-=   ESQUEMA PARA MODELO CONECTOR A MONGODB    =
+=        IMPORTACION DE LAS RUTAS             =
 =============================================*/
 
-let Schema = mongoose.Schema;
-let slideSchema = new Schema({
-
-})
+app.use( require('./ruta/slide.ruta'));
 
 /*=============================================
 =            CONEXIÓN A BASE DE DATOS         =
@@ -45,6 +43,6 @@ mongoose.connect('mongodb://localhost:27017/fit_project', {
 =           SALIDA AL PUERTO HTTP             =
 =============================================*/
 
-app.listen(4000, ()=> {
-	console.log('Puerto 4000 habilitado');
+app.listen(process.env.PORT, ()=> {
+	console.log(`Puerto ${process.env.PORT} habilitado`);
 })
