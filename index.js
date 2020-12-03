@@ -23,7 +23,7 @@ app.use(bodyParser.json({limit:'10mb', extend:true}));
 =        IMPORTACION DE LAS RUTAS             =
 =============================================*/
 
-app.use( require('./ruta/slide.ruta'));
+app.use( require('./ruta/inicio/benefits_inicio.ruta'));
 
 /*=============================================
 =            CONEXIÓN A BASE DE DATOS         =
