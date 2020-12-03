@@ -34,6 +34,31 @@ let mostrarSlide = (req, res) =>{
 
 }
 
+/*=============================================
+=                PETICION POST                =
+=============================================*/
+
+let crearSlide = (req, res) => {
+
+}
+
+/*=============================================
+=                PETICION PUT                 =
+=============================================*/
+
+let editarSlide = (req, res) => {
+
+}
+
+/*=============================================
+=              PETICION DELETE                =
+=============================================*/
+
+let eliminarSlide = (req, res) => {
+
+}
+
 module.exports = {
-	mostrarSlide
+	mostrarSlide,
+	crearSlide
 }

@@ -39,9 +39,9 @@ mongoose.connect('mongodb://localhost:27017/fit_project', {
 	console.log("Conectado a la base de datos");
 });
 
-/*=============================================
-=           SALIDA AL PUERTO HTTP             =
-=============================================*/
+/*============================================================
+=   SALIDA AL PUERTO HTTP (PUERTO CONFIGURABLE EN CONFIG.js) =
+==============================================================*/
 
 app.listen(process.env.PORT, ()=> {
 	console.log(`Puerto ${process.env.PORT} habilitado`);
