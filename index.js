@@ -34,6 +34,7 @@ app.use(require('./ruta/inicio/benefits_inicio.ruta'));
 app.use(require('./ruta/inicio/plan_personal.ruta'));
 app.use(require('./ruta/inicio/principal_img_inicio.ruta'));
 app.use(require('./ruta/navbar/logo.ruta'));
+app.use(require('./ruta/planes/benefits_planes.ruta'));
 
 /*=============================================
 =            CONEXIÓN A BASE DE DATOS         =
