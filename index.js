@@ -6,6 +6,7 @@ require('./config');
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const fileUpload = require('express-fileupload');
 /*=============================================
 =VARIABLE PARA LAS FUNCIONALIDADES DE EXPRESS =
 =============================================*/
@@ -18,6 +19,12 @@ const app = express();
 
 app.use(bodyParser.urlencoded({ limit:'10mb', extend:true}));
 app.use(bodyParser.json({limit:'10mb', extend:true}));
+
+/*=============================================
+=        MIDDLEWARES PARA FILEUPLOAD          =
+=============================================*/
+
+app.use(fileUpload());
 
 /*=============================================
 =        IMPORTACION DE LAS RUTAS             =
