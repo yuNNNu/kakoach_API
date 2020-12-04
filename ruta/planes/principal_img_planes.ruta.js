@@ -11,7 +11,7 @@ const PrincipalImgPlanes = require('../../controlador/planes/principal_img_plane
 =============================================*/
 
 app.get('/mostrar-principal-img-planes-data', PrincipalImgPlanes.mostrarData);
-app.get('/mostrar-principal-img-planes', PrincipalImgPlanes.mostrarImg);
+app.get('/mostrar-principal-img-planes/:imagen', PrincipalImgPlanes.mostrarImg);
 app.put('/editar-principal-img-planes-data/:id', PrincipalImgPlanes.editarData);
 app.post('/crear-principal-img-planes-data', PrincipalImgPlanes.crearData);
 

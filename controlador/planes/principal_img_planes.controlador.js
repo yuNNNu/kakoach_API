@@ -340,29 +340,26 @@ let editarData = (req, res) => {
 }
 
 
-
-
-
 /*=============================================
 =                   GET IMG                   =
 =============================================*/
 let mostrarImg = (req, res) => {
-// 	let imagen = req.params.imagen;
-// 	let rutaImagen = `./archivos/slide/${imagen}`;
+	let imagen = req.params.imagen;
+	let rutaImagen = `./archivos/planes/imgprincipal/${imagen}`;
 
-// 	fs.exists(rutaImagen, exists => {
-// 		if(!exists){
-// 			return res.json({
-// 				status: 400,
-// 				mensaje: "La imagen no existe"
-// 			})
-// 		}
+	fs.exists(rutaImagen, exists => {
+		if(!exists){
+			return res.json({
+				status: 400,
+				mensaje: "La imagen no existe"
+			})
+		}
 
-// 		res.sendFile(path.resolve(rutaImagen));
+		res.sendFile(path.resolve(rutaImagen));
 
-// 	})
-// }
+	})
 }
+
 
 
 

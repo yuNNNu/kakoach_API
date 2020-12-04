@@ -60,51 +60,47 @@ let showBenefits = (req, res)=>{
 }
 
 
-let updateBenefits = (req, res) =>
-{
+let updateBenefits = (req, res) =>  {
     // caputaramos id de beneficio
     let id = req.params.id;
     // obtenemos el cuerpo del formulario
     let body = req.body;
         //01  VALIDAMOS EXISTENCIA DE BENEFICIO
-        benefits.findById(id, (err, data) =>
-        {
-         
-        
-             //Validammos que no haya error
-            if (err) {
-                return res.json({
-                    status: 500,
-                    mensaje: "Error en el servidor",
-                    err
-                })
-            }
-            //Validamos que la beneficio exista
-            if (!data) {
-                return res.json({
-                    status: 404,
-                    mensaje: "No existe la galeria en la base de datos",
-                    err
-                })
-            }
+    benefits.findById(id, (err, data) => {        
+        //Validammos que no haya error
+        if (err) {
+            return res.json({
+                status: 500,
+                mensaje: "Error en el servidor",
+                err
+            })
+        }
+        //Validamos que la beneficio exista
+        if (!data) {
+            return res.json({
+                status: 404,
+                mensaje: "No existe el beneficio en la base de datos",
+                err
+            })
+        }
             // recepcion de datos a editar
             let titulo = data.titulo;
             let descripcion = data.descripcion;
                 // 02 VALIDAMOS QUE EXISTAN CAMBIOS
-                let validarCambio = (body, titulo, descripcion) =>
-                {
+                let validarCambio = (body, titulo, descripcion) => {
                         console.log(body)
                     return new Promise((resolve, reject) =>
                     {
-                        if (body.descripcion == undefined && body.titulo == undefined)
+                        if (descripcion == undefined && titulo == undefined)
                         {
                             reject(titulo, descripcion)
                         
-                        } else if (body.descripcion == undefined)
+                        } else if (descripcion == undefined)
                         {
                             reject(descripcion)
-                            titulo = body.titulo;
-                            resolve(titulo)
+                            _titulo = titulo;
+                            resolve(_titulo)
+
                         } else if(body.titulo == undefined){
                             reject(titulo)
                             descripcion = body.descripcion;
@@ -115,18 +111,13 @@ let updateBenefits = (req, res) =>
                             titulo = body.titulo;
                                resolve(titulo, descripcion)
                         }
-
-                       
-                     
                     })
                   
                 }
                 
                 // 03 ACTUALIZAR REGISTROS
-                let cambiarRegistroBD = (id, titulo, descripcion) =>
-                {
-                    return new Promise((resolve, reject) =>
-                    {
+                let cambiarRegistroBD = (id, titulo, descripcion) => {
+                    return new Promise((resolve, reject) => {
                         let datosBenefits = {
                             titulo: body.titulo,
                             descripcion: body.descripcion
@@ -136,20 +127,20 @@ let updateBenefits = (req, res) =>
                         benefits.findByIdAndUpdate(id, datosBenefits, {
                             new: true, // Con esto me muestra lo que se guardo y no el antiguo
                             runValidators: true // Con esto me muestra lo que se guardo y no el antiguo           
-                        }, (err, data) =>
-                        {
+                        }, (err, data) => {
                             if (err) {
+                                
                                 let respuesta = {
-                                res: res,
-                                error: error
+
+                                    res: res,
+                                    error: error
                                 }
                                 reject(respuesta);
-
                             }
 
                             let respuesta = {
-                            res: res,
-                            data: data
+                                res: res,
+                                data: data
                             }    
                             resolve(respuesta)
                         })
@@ -181,7 +172,8 @@ let updateBenefits = (req, res) =>
                 })
                 }))
                
-        })
+    })
+    
 }
 
 
