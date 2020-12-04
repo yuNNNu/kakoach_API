@@ -360,12 +360,6 @@ let mostrarImg = (req, res) => {
 	})
 }
 
-
-
-
-
-
-
 /*========================
 EXPORTAMOS FUNCIONES DEL CONTROLADOR
 ========================== */

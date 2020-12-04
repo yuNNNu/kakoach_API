@@ -7,9 +7,9 @@ const benefits = require('../../modelo/inicio/benefits_inicio.modelo')
 /*=============================================
 ADMINISTRACIÓN DE CARPETAS Y ARCHIVOS EN NODEJS
 =============================================*/
-const fs = require('fs');
-const { resolve } = require('path');
-const { rejects } = require('assert');
+// const fs = require('fs');
+// const { resolve } = require('path');
+// const { rejects } = require('assert');
 
 /*=============================================
 FUNCIÓN GET
@@ -61,65 +61,56 @@ let showBenefits = (req, res)=>{
 
 
 let updateBenefits = (req, res) =>  {
+/*=============================================
+FUNCIÓN PUT
+=============================================*/
     // caputaramos id de beneficio
     let id = req.params.id;
     // obtenemos el cuerpo del formulario
     let body = req.body;
         //01  VALIDAMOS EXISTENCIA DE BENEFICIO
-    benefits.findById(id, (err, data) => {        
-        //Validammos que no haya error
-        if (err) {
-            return res.json({
-                status: 500,
-                mensaje: "Error en el servidor",
-                err
-            })
-        }
-        //Validamos que la beneficio exista
-        if (!data) {
-            return res.json({
-                status: 404,
-                mensaje: "No existe el beneficio en la base de datos",
-                err
-            })
-        }
+        benefits.findById(id, (err, data) =>
+        {       
+             //Validammos que no haya error
+            if (err) {
+                return res.json({
+                    status: 500,
+                    mensaje: "Error en el servidor",
+                    err
+                })
+            }
+            //Validamos que la beneficio exista
+            if (!data) {
+                return res.json({
+                    status: 404,
+                    mensaje: "No existe el beneficio en la base de datos",
+                    err
+                })
+            }
             // recepcion de datos a editar
             let titulo = data.titulo;
-            let descripcion = data.descripcion;
-                // 02 VALIDAMOS QUE EXISTAN CAMBIOS
-                let validarCambio = (body, titulo, descripcion) => {
-                        console.log(body)
+       
+                // 02 VALIDAMOS QUE EXISTAN CAMBIOS, SOLO VALIDE EL TITULO PQ NOSE SI TIRA PROBLEMA CON  EL REVOLVE CON DOS VARIABLES
+                let validarCambio = (body, titulo) => {  
                     return new Promise((resolve, reject) =>
                     {
-                        if (descripcion == undefined && titulo == undefined)
+                        if (body.titulo == undefined)
                         {
-                            reject(titulo, descripcion)
-                        
-                        } else if (descripcion == undefined)
-                        {
-                            reject(descripcion)
-                            _titulo = titulo;
-                            resolve(_titulo)
-
-                        } else if(body.titulo == undefined){
-                            reject(titulo)
-                            descripcion = body.descripcion;
-                            resolve(descripcion)
+                           resolve(titulo)
                         } else
                         {
-                            descripcion = body.descripcion;
-                            titulo = body.titulo;
-                               resolve(titulo, descripcion)
-                        }
+                            titulo = body.titulo
+                            resolve(titulo)
+                       }
                     })
-                  
                 }
                 
                 // 03 ACTUALIZAR REGISTROS
                 let cambiarRegistroBD = (id, titulo, descripcion) => {
                     return new Promise((resolve, reject) => {
+
                         let datosBenefits = {
-                            titulo: body.titulo,
+                            titulo: titulo,
                             descripcion: body.descripcion
                         }
                         //Actualizamos en MongoDB
@@ -147,9 +138,9 @@ let updateBenefits = (req, res) =>  {
                     })        
                 }
                 // 04 SINCRONIZANDO PROMESAS
-                validarCambio(body, titulo, descripcion).then((titulo, descripcion) =>
+                validarCambio(body, titulo).then((titulo) =>
                 {
-                    cambiarRegistroBD(id, titulo, descripcion).then(respuesta =>
+                    cambiarRegistroBD(id, titulo, body).then(respuesta =>
                     {
                         respuesta["res"].json({
                         status: 200,

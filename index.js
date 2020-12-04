@@ -30,8 +30,10 @@ app.use(fileUpload());
 =        IMPORTACION DE LAS RUTAS             =
 =============================================*/
 
-app.use( require('./ruta/inicio/benefits_inicio.ruta'));
-app.use( require('./ruta/planes/principal_img_planes.ruta'));
+app.use(require('./ruta/inicio/benefits_inicio.ruta'));
+app.use(require('./ruta/inicio/plan_personal.ruta'));
+app.use(require('./ruta/inicio/principal_img_inicio.ruta'));
+app.use(require('./ruta/navbar/logo.ruta'));
 
 /*=============================================
 =            CONEXIÓN A BASE DE DATOS         =
