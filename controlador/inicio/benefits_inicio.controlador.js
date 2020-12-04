@@ -167,6 +167,54 @@ FUNCIÓN PUT
     
 }
 
+let createBenefit = (req, res) => {
+
+    // SE OBTIENE CUERPO DEL FORMULARIO 
+    let body = req.body;
+    // SE DECLARAN LAS VARIABLES
+    let title = body.titulo;
+    let desc = body.descripcion;
+
+    if(title == undefined){
+        return res.json({
+            status: 400,
+            mensaje: "El título no puede ir vacío."
+        })
+    }else if(desc == undefined){
+         return res.json({
+            status: 400,
+            mensaje: "La descripción no puede ir vacía."
+        })
+    }
+
+    let benef = new benefits({
+        titulo: title,
+        descripcion: desc 
+    })
+
+    benef.save((err, data) => {
+        if(err){
+
+            return res.json({
+                status:400,
+                mensaje: "Error al almacenar el título y la descripción del módulo.",
+                err
+            })
+
+        }
+
+        res.json({
+
+            status:200,
+            data,
+            mensaje:"El módulo ha sido creado con éxito."
+
+        })
+
+    })
+
+}
+
 
 
 
@@ -175,5 +223,6 @@ EXPORTAMOS FUNCIONES DEL CONTROLADOR
 ========================== */
 module.exports = {
     showBenefits,
-    updateBenefits
+    updateBenefits,
+    createBenefit
 }

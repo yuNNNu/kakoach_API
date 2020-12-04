@@ -59,11 +59,12 @@ let showBenefits = (req, res)=>{
 
 }
 
-
-let updateBenefits = (req, res) =>  {
 /*=============================================
 FUNCIÓN PUT
 =============================================*/
+
+let updateBenefits = (req, res) =>  {
+
     // caputaramos id de beneficio
     let id = req.params.id;
     // obtenemos el cuerpo del formulario
@@ -83,7 +84,7 @@ FUNCIÓN PUT
             if (!data) {
                 return res.json({
                     status: 404,
-                    mensaje: "No existe el beneficio en la base de datos",
+                    mensaje: "No existe el módulo en la base de datos",
                     err
                 })
             }
@@ -145,14 +146,14 @@ FUNCIÓN PUT
                         respuesta["res"].json({
                         status: 200,
                         data: respuesta["data"],
-                        mensaje: "El beneficio ha sido actualizado con exito"
+                        mensaje: "El módulo ha sido actualizado con exito"
                         })
                     }).catch((respuesta =>
                     {
                         respuesta["err"].json({
                         status: 400,
                         err: respuesta["err"],
-                        mensaje: "Error al editar el Beneficio"
+                        mensaje: "Error al editar el módulo"
                         })
                     }))
                 }).catch((respuesta =>
@@ -167,6 +168,54 @@ FUNCIÓN PUT
     
 }
 
+let createBenefit = (req, res) => {
+
+    // SE OBTIENE CUERPO DEL FORMULARIO 
+    let body = req.body;
+    // SE DECLARAN LAS VARIABLES
+    let title = body.titulo;
+    let desc = body.descripcion;
+
+    if(title == undefined){
+        return res.json({
+            status: 400,
+            mensaje: "El título no puede ir vacío."
+        })
+    }else if(desc == undefined){
+         return res.json({
+            status: 400,
+            mensaje: "La descripción no puede ir vacía."
+        })
+    }
+
+    let benef = new benefits({
+        titulo: title,
+        descripcion: desc 
+    })
+
+    benef.save((err, data) => {
+        if(err){
+
+            return res.json({
+                status:400,
+                mensaje: "Error al almacenar el título y la descripción del módulo.",
+                err
+            })
+
+        }
+
+        res.json({
+
+            status:200,
+            data,
+            mensaje:"El módulo ha sido creado con éxito."
+
+        })
+
+    })
+
+}
+
 
 
 
@@ -175,5 +224,6 @@ EXPORTAMOS FUNCIONES DEL CONTROLADOR
 ========================== */
 module.exports = {
     showBenefits,
-    updateBenefits
+    updateBenefits,
+    createBenefit
 }

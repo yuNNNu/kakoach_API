@@ -10,6 +10,7 @@ CREAMOS LAS RUTAS HTTP
 =============================================*/
 app.get('/show-planbenefits', Benefits.showBenefits);
 app.put('/edit-planbenefit/:id', Benefits.updateBenefits);
+app.post('/create-planbenefit', Benefits.createBenefit);
 /*========================
 EXPORTAMOS RUTA
 ========================== */
