@@ -54,6 +54,7 @@ app.use(require('./ruta/planes/principal_img_planes.ruta'));
 =               RUTAS DE SOBREMI              =
 =============================================*/
 app.use(require('./ruta/sobremi/principal_img_sobremi.ruta'));
+app.use(require('./ruta/sobremi/tarjetas.ruta'));
 
 /*=============================================
 =            CONEXIÓN A BASE DE DATOS         =
