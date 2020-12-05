@@ -57,6 +57,15 @@ app.use(require('./ruta/sobremi/principal_img_sobremi.ruta'));
 app.use(require('./ruta/sobremi/tarjetas.ruta'));
 
 /*=============================================
+=               RUTAS DE USUARIOS             =
+=============================================*/
+
+app.use(require('./ruta/usuarios/clientes.ruta'));
+app.use(require('./ruta/usuarios/administradores.ruta'));
+
+
+
+/*=============================================
 =            CONEXIÓN A BASE DE DATOS         =
 =============================================*/
 mongoose.connect('mongodb://localhost:27017/fit_project', {

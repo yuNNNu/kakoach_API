@@ -343,7 +343,7 @@ let editarData = (req, res) => {
 
 let eliminarTarjeta = (req, res) => {
 
-	// Se captura id del slide a eliminar
+	// Se captura id de la tarjeta a eliminar
 
 	let id = req.params.id;
 
