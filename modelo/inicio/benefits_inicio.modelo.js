@@ -19,4 +19,4 @@ let benefitsSchema = new Schema({
 /*=============================================
 EXPORTAMOS EL MODELO
 =============================================*/
-module.exports = mongoose.model("benefits", benefitsSchema);
+module.exports = mongoose.model("iniciobenefits", benefitsSchema);

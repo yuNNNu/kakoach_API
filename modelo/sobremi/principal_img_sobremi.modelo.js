@@ -19,4 +19,4 @@ let plansImgSchema = new Schema({
 
 })
 
-module.exports = mongoose.model("principalimageinicios", plansImgSchema);
+module.exports = mongoose.model("principalimagesobremis", plansImgSchema);

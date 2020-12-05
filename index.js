@@ -28,13 +28,32 @@ app.use(fileUpload());
 
 /*=============================================
 =        IMPORTACION DE LAS RUTAS             =
+
+
+/*=============================================
+=               RUTAS GENERALES               =
 =============================================*/
 
+app.use(require('./ruta/navbar/logo.ruta'));
+app.use(require('./ruta/socialmedia/socialmedia.ruta'));
+
+/*=============================================
+=               RUTAS DE INICIO               =
+=============================================*/
 app.use(require('./ruta/inicio/benefits_inicio.ruta'));
 app.use(require('./ruta/inicio/plan_personal.ruta'));
 app.use(require('./ruta/inicio/principal_img_inicio.ruta'));
-app.use(require('./ruta/navbar/logo.ruta'));
+
+/*=============================================
+=               RUTAS DE PLANES               =
+=============================================*/
 app.use(require('./ruta/planes/benefits_planes.ruta'));
+app.use(require('./ruta/planes/principal_img_planes.ruta'));
+
+/*=============================================
+=               RUTAS DE SOBREMI              =
+=============================================*/
+app.use(require('./ruta/sobremi/principal_img_sobremi.ruta'));
 
 /*=============================================
 =            CONEXIÓN A BASE DE DATOS         =

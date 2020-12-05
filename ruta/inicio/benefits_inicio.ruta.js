@@ -8,9 +8,9 @@ const Benefits = require('../../controlador/inicio/benefits_inicio.controlador')
 /*=============================================
 CREAMOS LAS RUTAS HTTP
 =============================================*/
-app.get('/show-benefit', Benefits.showBenefits);
+app.get('/show-benefits', Benefits.showBenefits);
 app.put('/edit-benefit/:id', Benefits.updateBenefits);
-app.post('./create-benefit', Benefits.createBenefit);
+app.post('/create-benefit', Benefits.createBenefit);
 /*========================
 EXPORTAMOS RUTA
 ========================== */

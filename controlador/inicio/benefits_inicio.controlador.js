@@ -145,14 +145,14 @@ FUNCIÓN PUT
                         respuesta["res"].json({
                         status: 200,
                         data: respuesta["data"],
-                        mensaje: "El beneficio ha sido actualizado con exito"
+                        mensaje: "El beneficio ha sido actualizado con éxito"
                         })
                     }).catch((respuesta =>
                     {
                         respuesta["err"].json({
                         status: 400,
                         err: respuesta["err"],
-                        mensaje: "Error al editar el Beneficio"
+                        mensaje: "Error al editar el módulo"
                         })
                     }))
                 }).catch((respuesta =>

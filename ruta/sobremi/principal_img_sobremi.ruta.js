@@ -4,16 +4,16 @@ const app = express();
 =          SE IMPORTA EL CONTROLADOR          =
 =============================================*/
 
-const PrincipalImgInicio = require('../../controlador/inicio/principal_img_inicio.controlador');
+const PrincipalImgSobremi = require('../../controlador/sobremi/principal_img_sobremi.controlador');
 
 /*=============================================
 =          SE CREAN LAS RUTAS HTTP            =
 =============================================*/
 
-app.get('/mostrar-principal-img-inicio-data', PrincipalImgInicio.mostrarData);
-app.get('/mostrar-principal-img-inicio/:imagen', PrincipalImgInicio.mostrarImg);
-app.put('/editar-principal-img-inicio-data/:id', PrincipalImgInicio.editarData);
-app.post('/crear-principal-img-inicio-data', PrincipalImgInicio.crearData);
+app.get('/mostrar-principal-img-sobremi-data', PrincipalImgSobremi.mostrarData);
+app.get('/mostrar-principal-img-sobremi/:imagen', PrincipalImgSobremi.mostrarImg);
+app.put('/editar-principal-img-sobremi-data/:id', PrincipalImgSobremi.editarData);
+app.post('/crear-principal-img-sobremi-data', PrincipalImgSobremi.crearData);
 
 /*=============================================
 =          SE EXPORTA LA RUTA                 =

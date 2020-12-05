@@ -1,5 +1,5 @@
 // IMPORTAMOS EL MODELO
-const PrincipalImgPlanes = require('../../modelo/inicio/principal_img_inicio.modelo');
+const PrincipalImgSobremi = require('../../modelo/sobremi/principal_img_sobremi.modelo');
 // LIBRARIES
 const fs = require('fs');
 const path = require('path');
@@ -12,7 +12,7 @@ const fileUpload = require('express-fileupload');
 
 let mostrarData = (req, res) => {
 
-	PrincipalImgPlanes.find({}).exec((err, data) => {
+	PrincipalImgSobremi.find({}).exec((err, data) => {
 		if(err){
 			return res.json({
 				status: 500,
@@ -21,7 +21,7 @@ let mostrarData = (req, res) => {
 		}
 
 		// Mostrar conteo de indices que existen en mongoose y retorno de los datos
-		PrincipalImgPlanes.countDocuments({}, (err, total) => {
+		PrincipalImgSobremi.countDocuments({}, (err, total) => {
 			if(err){
 				return res.json({
 					status: 500,
@@ -94,7 +94,7 @@ let crearData = (req, res) => {
 
 	// Movemos la imagen a la carpeta
 
-	imagen.mv(`./archivos/inicio/imgprincipal/${nombre}.${extension}`, err => {
+	imagen.mv(`./archivos/sobremi/imgprincipal/${nombre}.${extension}`, err => {
 
 		if(err){
 			return res.json({
@@ -107,7 +107,7 @@ let crearData = (req, res) => {
 
 		//Obtenemos los datos del formulario para pasarlos al modelo
 
-		let principalimgplanes = new PrincipalImgPlanes({
+		let principalimgSobremi = new PrincipalImgSobremi({
 		
 			imagen:`${nombre}.${extension}`,
 			titulo:body.titulo,
@@ -117,7 +117,7 @@ let crearData = (req, res) => {
 
 		//Guardamos en MongoDB
 
-		principalimgplanes.save((err, data)=>{
+		principalimgSobremi.save((err, data)=>{
 
 			if(err){
 
@@ -159,7 +159,7 @@ let editarData = (req, res) => {
 
 	let body = req.body;
 
-	PrincipalImgPlanes.findById(id, (err, data) => {
+	PrincipalImgSobremi.findById(id, (err, data) => {
 		if(err){
 			return res.json({
 				status: 500,
@@ -226,7 +226,7 @@ let editarData = (req, res) => {
 
 					let extension = imagen.name.split('.').pop();
 
-					imagen.mv(`./archivos/inicio/imgprincipal/${nombre}.${extension}`, err =>{
+					imagen.mv(`./archivos/sobremi/imgprincipal/${nombre}.${extension}`, err =>{
 
 						if(err){
 
@@ -242,9 +242,9 @@ let editarData = (req, res) => {
 
 						//Borramos la antigua imagen
 
-						if(fs.existsSync(`./archivos/inicio/imgprincipal/${rutaImagen}`)){
+						if(fs.existsSync(`./archivos/sobremi/imgprincipal/${rutaImagen}`)){
 
-							fs.unlinkSync(`./archivos/inicio/imgprincipal/${rutaImagen}`);
+							fs.unlinkSync(`./archivos/sobremi/imgprincipal/${rutaImagen}`);
 
 						}
 
@@ -271,7 +271,7 @@ let editarData = (req, res) => {
 
 				//Actualizamos en MongoDB
 				//https://mongoosejs.com/docs/api.html#model_Model.findByIdAndUpdate
-				PrincipalImgPlanes.findByIdAndUpdate(id, datos, {new:true, runValidators:true}, ( err, data) =>{
+				PrincipalImgSobremi.findByIdAndUpdate(id, datos, {new:true, runValidators:true}, ( err, data) =>{
 
 					if(err){
 
@@ -345,7 +345,7 @@ let editarData = (req, res) => {
 =============================================*/
 let mostrarImg = (req, res) => {
 	let imagen = req.params.imagen;
-	let rutaImagen = `./archivos/inicio/imgprincipal/${imagen}`;
+	let rutaImagen = `./archivos/sobremi/imgprincipal/${imagen}`;
 
 	fs.exists(rutaImagen, exists => {
 		if(!exists){
