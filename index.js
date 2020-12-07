@@ -36,6 +36,7 @@ app.use(fileUpload());
 
 app.use(require('./ruta/navbar/logo.ruta'));
 app.use(require('./ruta/socialmedia/socialmedia.ruta'));
+app.use(require('./ruta/footer/info_footer.ruta'));
 
 /*=============================================
 =               RUTAS DE INICIO               =
