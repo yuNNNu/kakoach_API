@@ -51,6 +51,7 @@ app.use(require('./ruta/inicio/principal_img_inicio.ruta'));
 app.use(require('./ruta/planes/benefits_planes.ruta'));
 app.use(require('./ruta/planes/principal_img_planes.ruta'));
 app.use(require('./ruta/planes/categoria.ruta'));
+app.use(require('./ruta/planes/planes.ruta'));
 
 /*=============================================
 =               RUTAS DE SOBREMI              =
