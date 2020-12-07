@@ -9,8 +9,8 @@ const Categories = require('../../controlador/planes/categoria.controlador');
 CREAMOS LAS RUTAS HTTP
 =============================================*/
 app.get('/show-categories', Categories.showData);
-app.put('/edit-categorie/:id', Categories.updateData);
-app.post('/create-categorie', Categories.createData);
+app.put('/edit-category/:id', Categories.updateData);
+app.post('/create-category', Categories.createData);
 /*========================
 EXPORTAMOS RUTA
 ========================== */
