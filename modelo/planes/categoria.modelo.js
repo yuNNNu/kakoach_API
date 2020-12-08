@@ -9,11 +9,11 @@ let Schema = mongoose.Schema;
 let categoriaSchema = new Schema({
     titulo: {
         type: String,
-        required: [true, "El titulo es obligatorio"]
+        required: [false]
     },
     descripcion: {
 		type: String,
-		required:[true, "La descripción es obligatoria"]
+		required:[false]
 	},
     type: {
 		type: String,

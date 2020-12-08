@@ -68,107 +68,119 @@ FUNCIÓN PUT
     let id = req.params.id;
     // obtenemos el cuerpo del formulario
     let body = req.body;
-        //01  VALIDAMOS EXISTENCIA DE BENEFICIO
-        Categoria.findById(id, (err, data) =>
-        {       
-             //Validammos que no haya error
-            if (err) {
-                return res.json({
-                    status: 500,
-                    mensaje: "Error en el servidor",
-                    err
-                })
-            }
-            //Validamos que la beneficio exista
-            if (!data) {
-                return res.json({
-                    status: 404,
-                    mensaje: "No existe el beneficio en la base de datos",
-                    err
-                })
-            }
-            // recepcion de datos a editar
-            let titulo = data.titulo;
-            let descripcion = data.descripcion;
-       
-                // 02 VALIDAMOS QUE EXISTAN CAMBIOS, SOLO VALIDE EL TITULO PQ NOSE SI TIRA PROBLEMA CON  EL REVOLVE CON DOS VARIABLES
-                let validarCambio = (body, titulo) => {  
-                    return new Promise((resolve, reject) =>
-                    {
-                        if (body.titulo == undefined)
-                        {
-                           resolve(titulo)
-                        } else
-                        {
-                            titulo = body.titulo
-                            resolve(titulo)
-                       }
+    //01  VALIDAMOS EXISTENCIA DE BENEFICIO
+    Categoria.findById(id, (err, data) =>
+    {       
+         //Validammos que no haya error
+        if (err) {
+            return res.json({
+                status: 500,
+                mensaje: "Error en el servidor",
+                err
+            })
+        }
+        //Validamos que la beneficio exista
+        if (!data) {
+            return res.json({
+                status: 404,
+                mensaje: "No existe el nivel en la base de datos",
+                err
+            })
+        }
 
-                    })
+        let title = data.titulo;
+        let desc = data.descripcion;
+           
+        let validarCambio = (req, title) => {
+            return new Promise((resolve, reject) => {
+                let body = req.body;
+
+                if(body.titulo == undefined || body.titulo == ""){
+                    resolve(title);
+                }else{
+                    title = body.titulo;
+                    resolve(title)
                 }
-                
-                // 03 ACTUALIZAR REGISTROS
-                let cambiarRegistroBD = (id, titulo, descripcion) => {
-                    return new Promise((resolve, reject) => {
+            })
+        }
 
-                        let datosCategories = {
-                            titulo: titulo,
-                            descripcion: body.descripcion,
-                            type: data.type,
-                            click: data.click
+        let cambiarRegistroBd = (id, body, title, desc, data) => {
+            return new Promise((resolve, reject) => {
+
+                if(body.descripcion == undefined || body.descripcion == ""){
+                    desc = desc;
+                }else{
+                    desc = body.descripcion;
+                }
+
+                let datos = {
+                    titulo: title,
+                    descripcion: desc,
+                    type: data.type,
+                    click: data.click
+                }
+
+                Categoria.findByIdAndUpdate(id, datos, {new:true, runValidators:true}, (err, data) => {
+                    if(err){
+                        let respuesta = {
+                            res: res,
+                            err: err
                         }
-                        //Actualizamos en MongoDB
-                        //https://mongoosejs.com/docs/api.html#model_Model.findByIdAndUpdate
-                        Categoria.findByIdAndUpdate(id, datosCategories, {
-                            new: true, // Con esto me muestra lo que se guardo y no el antiguo
-                            runValidators: true // Con esto me muestra lo que se guardo y no el antiguo           
-                        }, (err, data) => {
-                            if (err) {
-                                
-                                let respuesta = {
 
-                                    res: res,
-                                    err: err
-                                }
-                                reject(respuesta);
-                            }
+                        reject(respuesta)
+                    }
 
-                            let respuesta = {
-                                res: res,
-                                data: data
-                            }    
-                            resolve(respuesta)
-                        })
-                    })        
-                }
-                // 04 SINCRONIZANDO PROMESAS
-                validarCambio(body, titulo).then((titulo) =>
-                {
-                    cambiarRegistroBD(id, titulo, body).then(respuesta =>
-                    {
-                        respuesta["res"].json({
-                        status: 200,
-                        data: respuesta["data"],
-                        mensaje: "El nivel ha sido actualizado con éxito"
-                        })
-                    }).catch((respuesta =>
-                    {
-                        respuesta["err"].json({
-                        status: 400,
-                        err: respuesta["err"],
-                        mensaje: "Error al editar el módulo"
-                        })
-                    }))
-                }).catch((respuesta =>
-                {
-                    respuesta["res"].json({
-                    status: 400,
-                    mensaje: respuesta["mensaje"]
+                    let respuesta = {
+                        res: res,
+                        data: data
+                    }
+
+                    resolve(respuesta);
                 })
-                }))
-               
-    })
-    
+
+            })
+        }
+
+        /*=============================================
+                SINCRONIZAMOS LAS PROMESAS
+        =============================================*/
+
+        validarCambio(req, title).then(title => {
+
+            cambiarRegistroBd(id, body, title, desc, data).then(respuesta =>{
+
+                respuesta["res"].json({
+
+                    status:200,
+                    data: respuesta["data"],
+                    mensaje:"El modulo ha sido actualizado con éxito"
+
+                })
+
+            }).catch( respuesta => {
+
+                respuesta["res"].json({
+
+                    status:400,
+                    err: respuesta["err"],
+                    mensaje:"Error al editar el modulo"
+
+                })
+
+
+            })
+
+        }).catch(respuesta => {
+
+            respuesta["res"].json({
+
+                status:400,
+                mensaje:respuesta["mensaje"]
+
+            })
+
+        })
+    })   
 }
 
 let createData = (req, res) => {
