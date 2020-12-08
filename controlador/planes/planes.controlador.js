@@ -327,6 +327,7 @@ let updatePlan = (req, res) => {
 
 					})	
 				}else{
+					
 					resolve(rutaImagen);
 				}
 			})
@@ -335,9 +336,33 @@ let updatePlan = (req, res) => {
 		let type = data.type;
 		let nivel = data.nivel;
 		let pros = data.pros;
-
-		let cambiarRegistrosBd = (id, body, rutaImagen, type, nivel, pros) => {
+		let nombre = data.nombre;
+		let descripcion = data.descripcion;
+		let precio = data.precio;
+		let cambiarRegistrosBd = (id, body, rutaImagen, type, nivel, pros, nombre, descripcion, precio) => {
 			return new Promise ((resolve, reject) => {
+
+				let temp = body.pros;
+
+				if(body.nombre == undefined){
+					nombre = data.nombre
+				}else{
+					nombre = body.nombre
+				}	
+
+				if(body.descripcion == undefined){
+					descripcion = data.descripcion
+				}else{
+					descripcion = body.descripcion
+				}
+
+				if(body.precio == undefined){
+					precio = data.precio
+				}else{
+					precio = body.precio
+				}
+
+
 				let datos = {
 					type: type,
 					nivel: nivel,
@@ -345,8 +370,9 @@ let updatePlan = (req, res) => {
 					nombre: body.nombre,
 					descripcion: body.descripcion,
 					precio: body.precio,
-					pros: pros
+					pros: temp
 				}
+
 
 				//Actualizamos en MongoDB
 				//https://mongoosejs.com/docs/api.html#model_Model.findByIdAndUpdate
