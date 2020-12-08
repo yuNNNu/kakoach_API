@@ -327,7 +327,7 @@ let updatePlan = (req, res) => {
 
 					})	
 				}else{
-					
+
 					resolve(rutaImagen);
 				}
 			})
@@ -367,9 +367,9 @@ let updatePlan = (req, res) => {
 					type: type,
 					nivel: nivel,
 					imagen: rutaImagen,
-					nombre: body.nombre,
-					descripcion: body.descripcion,
-					precio: body.precio,
+					nombre: nombre,
+					descripcion: descripcion,
+					precio: precio,
 					pros: temp
 				}
 
