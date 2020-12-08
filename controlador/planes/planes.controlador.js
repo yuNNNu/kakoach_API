@@ -154,11 +154,276 @@ let newPlan = (req, res) =>
 	})
 }
 
+let deletePlan = (req, res) => {
+
+	// Se captura id de la tarjeta a eliminar
+
+	let id = req.params.id;
+
+	planes.findById(id, (err, data) => {
+
+		if(err){
+
+			return res.json({
+
+				status: 500,
+				mensaje: "Error en el servidor",
+				err
+			})
+		}
+
+		if(!data){
+
+			return res.json({
+				status: 400,
+				mensaje: "No existe el plan en la BD",
+				err
+
+			})
+		}
+
+		// borrar antigua imagen
+
+		if(fs.existsSync(`./archivos/planes/img-plan/${data.imagen}`)){
+
+			fs.unlinkSync(`./archivos/planes/img-plan/${data.imagen}`);
+		}
+
+		// borrar dato en mongo db
+
+		planes.findByIdAndRemove(id, (err, data) => {
+
+			if(err){
+
+				return res.json({
+
+					status: 500,
+					mensaje: "Error al eliminar el plan",
+					err
+
+				})
+			}
+
+			res.json({
+
+				status: 200,
+				mensaje: "El plan fue eliminado correctamente"
+			})
+
+		})
+
+
+	})
+}
+
+/*=============================================
+=                     PUT                     =
+=============================================*/
+
+let updatePlan = (req, res) => {
+
+	//Capturamos el id del slide a actualizar
+
+	let id = req.params.id;
+
+	//Obtenemos el cuerpo del formulario
+
+	let body = req.body;
+
+	planes.findById(id, (err, data) => {
+		if(err){
+			return res.json({
+				status: 500,
+				mensaje: "Error en el servidor",
+				err
+			})
+		}
+
+		if(!data){
+
+			return res.json({
+				status: 400,
+				mensaje: "El plan no existe en la Base de Datos"
+			})
+
+		}
+
+		let rutaImagen = data.imagen;
+
+		/*=============================================
+		    VALIDAMOS QUE EXISTAN CAMBIO DE IMAGEN
+		=============================================*/
+
+		let validarCambioImg = (req, rutaImagen) => {
+
+			return new Promise((resolve, reject) => {
+
+				if(req.files){
+
+					//Se captura la imagen
+
+					let imagen = req.files.imagen;
+
+					if(imagen.mimetype != 'image/jpeg' && imagen.mimetype != 'image/png' 
+						&& imagen.mimetype != 'image/JPEG' && imagen.mimetype != 'image/PNG'){
+
+						let respuesta = {
+							res: res,
+							mensaje: "la imagen debe ser formato JPG o PNG"
+				
+						}
+
+						reject(respuesta);
+					}
+
+					//Validamos el tamaño del archivo
+
+					if(imagen.size > 2000000){
+
+						let respuesta = {
+
+							res: res,
+							mensaje: "la imagen debe ser inferior a 2MB"
+						}
+
+						reject(respuesta);
+					}
+
+					//Cambiar nombre al archivo
+
+					let nombre = Math.floor(Math.random()*10000);
+
+					//Capturar la extensión del archivo
+
+					let extension = imagen.name.split('.').pop();
+
+					imagen.mv(`./archivos/planes/img-plan/${nombre}.${extension}`, err =>{
+
+						if(err){
+
+							let respuesta = {
+
+								res: res,
+								mensaje: "Error al guardar la imagen"
+							}
+
+							reject(respuesta);
+
+						}
+
+						//Borramos la antigua imagen
+
+						if(fs.existsSync(`./archivos/planes/img-plan/${rutaImagen}`)){
+
+							fs.unlinkSync(`./archivos/planes/img-plan/${rutaImagen}`);
+
+						}
+
+						//Damos valor a la nueva imagen
+
+						rutaImagen = `${nombre}.${extension}`;
+
+						resolve(rutaImagen);
+
+					})	
+				}else{
+					resolve(rutaImagen);
+				}
+			})
+		}
+
+		let type = data.type;
+		let nivel = data.nivel;
+		let pros = data.pros;
+
+		let cambiarRegistrosBd = (id, body, rutaImagen, type, nivel, pros) => {
+			return new Promise ((resolve, reject) => {
+				let datos = {
+					type: type,
+					nivel: nivel,
+					imagen: rutaImagen,
+					nombre: body.nombre,
+					descripcion: body.descripcion,
+					precio: body.precio,
+					pros: pros
+				}
+
+				//Actualizamos en MongoDB
+				//https://mongoosejs.com/docs/api.html#model_Model.findByIdAndUpdate
+				planes.findByIdAndUpdate(id, datos, {new:true, runValidators:true}, ( err, data) =>{
+
+					if(err){
+
+						let respuesta = {
+
+							res: res,
+							error: err
+						}
+
+						reject(respuesta);
+
+					}		
+
+					let respuesta = {
+
+						res: res,
+						data: data 
+					}
+
+					resolve(respuesta);
+				})
+			})
+		}
+
+		/*=============================================
+		SINCRONIZAMOS LAS PROMESAS
+		=============================================*/
+
+		validarCambioImg(req, rutaImagen).then((rutaImagen) => {
+
+			cambiarRegistrosBd(id, body, rutaImagen, type, nivel, pros).then(respuesta =>{
+
+				respuesta["res"].json({
+
+					status:200,
+					data: respuesta["data"],
+					mensaje:"El modulo ha sido actualizado con éxito"
+
+				})
+
+			}).catch( respuesta => {
+
+				respuesta["res"].json({
+
+					status:400,
+					err: respuesta["err"],
+					mensaje:"Error al editar el modulo"
+
+				})
+
+
+			})
+
+		}).catch(respuesta => {
+
+			respuesta["res"].json({
+
+				status:400,
+				mensaje:respuesta["mensaje"]
+
+			})
+
+		})
+	})
+
+}
 
 /*========================
 EXPORTAMOS FUNCIONES DEL CONTROLADOR
 ========================== */
 module.exports = {
     showPlanes,
-    newPlan
+    newPlan,
+    deletePlan,
+    updatePlan
 }
