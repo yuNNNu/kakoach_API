@@ -1,6 +1,7 @@
 // IMPORTAMOS EL MODELO
 const Clientes = require('../../modelo/usuarios/clientes.modelo');
-
+// Requerimos el modulo para generar token 
+const jwt = require('jsonwebtoken')
 /*=============================================
 =                     GET                     =
 =============================================*/
@@ -113,10 +114,10 @@ let loginCliente = (req, res) => {
                 mensaje: "La contraseña es incorrecta",
                 err
             })
-        }
-
+		}
+       
         res.json({
-            status: 200,
+			status: 200,
             mensaje: "ok"
         })
     })

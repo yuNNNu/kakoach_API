@@ -79,11 +79,59 @@ let crearData = (req, res) => {
 	})
 
 }
+/*========================
+FUNCION LOGIN
+========================== */
+let login = (req, res) => {
+    //Obtenemos el cuerpo del formulario
+    let body = req.body;
+    //Recorremos la base de datos en busqueda de coincidencia con el usuario
+    Clientes.findOne({
+        mail: body.mail
+    }, (err, data) => {
+        if (err) {
+            return res.json({
+                status: 500,
+                mensaje: "Error en el servidor",
+                err
+            })
+        }
+        //Validamos que el Usuario exista
+        if (!data) {
+            return res.json({
+                status: 400,
+                mensaje: "El usuario no existe en la Base de datos",
+                err
+            })
+        }
+        //Validamos que la contraseña sea correcta
+        if (body.password != data.password) {
+            return res.json({
+                status: 400,
+                mensaje: "La contraseña es incorrecta",
+                err
+            })
+		}
+        //Generamos TOKEN de autorizacion, que dure 30 dias
+        let token = jwt.sign({
+            data
+        }, process.env.SECRET, {
+            expiresIn: process.env.CADUCIDAD
+        })
+
+        res.json({
+			status: 200,
+			token
+        })
+    })
+}
+
 
 /*========================
 EXPORTAMOS FUNCIONES DEL CONTROLADOR
 ========================== */
 module.exports = {
     mostrarData,
-    crearData
+	crearData,
+	login
 }
