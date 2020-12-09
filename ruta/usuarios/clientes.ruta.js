@@ -12,6 +12,7 @@ const Clientes = require('../../controlador/usuarios/clientes.controlador');
 
 app.get('/mostrar-clientes', Clientes.mostrarData);
 app.post('/crear-cliente', Clientes.crearData);
+app.post('/login-usuario', Clientes.loginCliente);
 
 /*=============================================
 =          SE EXPORTA LA RUTA                 =
