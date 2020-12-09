@@ -4,8 +4,9 @@ ESQUEMA PARA EL MODELO CONECTOR A MONGODB
 const mongoose = require('mongoose');
 
 let Schema = mongoose.Schema;
+
 let logoSchema = new Schema({
-    logo: {
+    imagen: {
         type: String,
         required: [true, "El logo es obligatorio"]
     }
@@ -13,4 +14,4 @@ let logoSchema = new Schema({
 /*=============================================
 EXPORTAMOS EL MODELO
 =============================================*/
-module.exports = mongoose.model("navbars", logoSchema);
+module.exports = mongoose.model("logos", logoSchema);

@@ -2,7 +2,7 @@
 IMPORTAMOS EL MODELO
 =============================================*/
 
-const Logo = require('../../modelo//navbar/logo.modelo')
+const Logo = require('../../modelo/navbar/logo.modelo')
 // LIBRARIES
 const fs = require('fs');
 const path = require('path');
@@ -57,7 +57,7 @@ let showDataLogo = (req, res) =>
 let mostrarImg = (req, res) =>
 {
     let imagen = req.params.imagen;
-    let rutaImg = `./archivos/img/logo/${ imagen }`;
+    let rutaImg = `./archivos/navbar/logo/${ imagen }`;
 
     fs.exists(rutaImg, exists => {
 		if(!exists){
@@ -79,181 +79,286 @@ let mostrarImg = (req, res) =>
 /*=============================================
 FUNCIÓN PUT
 =============================================*/
-let updateLogo = (req, res) =>
-{
-    // caputaramos id de beneficio
+let editarData = (req, res) => {
+
+    //Capturamos el id del slide a actualizar
+
     let id = req.params.id;
-    // obtenemos el cuerpo del formulario
+
+    //Obtenemos el cuerpo del formulario
+
     let body = req.body;
-        //01  VALIDAMOS EXISTENCIA DE BENEFICIO
-        Logo.findById(id, (err, data) =>
-        {
-         console.log(data)
-        
-             //Validammos que no haya error
-            if (err) {
-                return res.json({
-                    status: 500,
-                    mensaje: "Error en el servidor",
-                    err
-                })
-            }
-            //Validamos que la beneficio exista
-            if (!data) {
-                return res.json({
-                    status: 404,
-                    mensaje: "No existe el Logo en la base de datos",
-                    err
-                })
-            }
-            // recepcion de datos a editar AQUI DEBE SER LA RUTA DE LA IMG
-            let rutaImg = data.logo;
-       
-                // 02 VALIDAMOS QUE EXISTAN CAMBIOS
-                let validarCambio = (req, rutaImg) =>
-                {  
-                //   solo valide que si es que no viene una foto
-                    return new Promise((resolve, reject) =>
-                    {
-                        if (req.files)
-                        {
-                           	//Se captura la imagen
 
-                            let imagen = req.files.imagen;
-                            // validamos formato
-                            if(imagen.mimetype != 'image/jpeg' && imagen.mimetype != 'image/png' 
-                            && imagen.mimetype != 'image/JPEG' && imagen.mimetype != 'image/PNG'){
+    Logo.findById(id, (err, data) => {
+        if(err){
+            return res.json({
+                status: 500,
+                mensaje: "Error en el servidor",
+                err
+            })
+        }
 
-                                let respuesta = {
-                                res: res,
-                                mensaje: "la imagen debe ser formato JPG o PNG"
+        if(!data){
 
-                                }
+            return res.json({
+                status: 400,
+                mensaje: "El logo no existe en la Base de Datos"
+            })
 
-                                reject(respuesta);
-                            }
+        }
 
-                        //Validamos el tamaño del archivo
+        let rutaImagen = data.imagen;
 
-                        if(imagen.size > 2000000){
+        /*=============================================
+            VALIDAMOS QUE EXISTAN CAMBIO DE IMAGEN
+        =============================================*/
+
+        let validarCambioImg = (req, rutaImagen) => {
+
+            return new Promise((resolve, reject) => {
+
+                if(req.files){
+
+                    //Se captura la imagen
+
+                    let imagen = req.files.imagen;
+
+                    if(imagen.mimetype != 'image/jpeg' && imagen.mimetype != 'image/png' 
+                        && imagen.mimetype != 'image/JPEG' && imagen.mimetype != 'image/PNG'){
+
+                        let respuesta = {
+                            res: res,
+                            mensaje: "la imagen debe ser formato JPG o PNG"
+                
+                        }
+
+                        reject(respuesta);
+                    }
+
+                    //Validamos el tamaño del archivo
+
+                    if(imagen.size > 2000000){
+
+                        let respuesta = {
+
+                            res: res,
+                            mensaje: "la imagen debe ser inferior a 2MB"
+                        }
+
+                        reject(respuesta);
+                    }
+
+                    //Cambiar nombre al archivo
+
+                    let nombre = Math.floor(Math.random()*10000);
+
+                    //Capturar la extensión del archivo
+
+                    let extension = imagen.name.split('.').pop();
+
+                    imagen.mv(`./archivos/navbar/logo/${nombre}.${extension}`, err =>{
+
+                        if(err){
 
                             let respuesta = {
 
                                 res: res,
-                                mensaje: "la imagen debe ser inferior a 2MB"
+                                mensaje: "Error al guardar la imagen"
                             }
 
                             reject(respuesta);
+
                         }
 
-                        //Cambiar nombre al archivo
+                        //Borramos la antigua imagen
 
-                        let nombre = Math.floor(Math.random()*10000);
+                        if(fs.existsSync(`./archivos/navbar/logo/${rutaImagen}`)){
 
-                        //Capturar la extensión del archivo
+                            fs.unlinkSync(`./archivos/navbar/logo/${rutaImagen}`);
 
-                        let extension = imagen.name.split('.').pop();
+                        }
 
-                        imagen.mv(`./archivos/img/logo/${nombre}.${extension}`, err =>{
+                        //Damos valor a la nueva imagen
 
-                            if(err){
+                        rutaImagen = `${nombre}.${extension}`;
 
-                                let respuesta = {
+                        resolve(rutaImagen);
 
-                                    res: res,
-                                    mensaje: "Error al guardar la imagen"
-                                }
-
-                                reject(respuesta);
-
-                            }
-
-                            //Borramos la antigua imagen
-
-                            if(fs.existsSync(`./archivos/img/logo/${rutaImg}`)){
-
-                                fs.unlinkSync(`./archivos/img/logo/${rutaImg}`);
-
-                            }
-
-                            //Damos valor a la nueva imagen
-
-                            rutaImg = `${nombre}.${extension}`;
-
-                            resolve(rutaImg);
-
-                        })
-
-                        } else
-                        {
-                            rutaImg = body.imagen
-                            resolve(rutaImg)
-                       }
-                  
-                    })
-                  
+                    })    
+                }else{
+                    resolve(rutaImagen);
                 }
-                
-                // 03 ACTUALIZAR REGISTROS
-                let cambiarRegistroBD = (id, rutaImg) =>
-                {
-                    return new Promise((resolve, reject) =>
-                    {
-                        let datosLogo = {
-                            logo: rutaImg
-                        }
-                        //Actualizamos en MongoDB
-                        //https://mongoosejs.com/docs/api.html#model_Model.findByIdAndUpdate
-                        Logo.findByIdAndUpdate(id, datosLogo, {
-                            new: true, // Con esto me muestra lo que se guardo y no el antiguo
-                            runValidators: true // Con esto me muestra lo que se guardo y no el antiguo           
-                        }, (err, data) =>
-                        {
-                            if (err) {
-                                let respuesta = {
-                                res: res,
-                                error: err
-                                }
-                                reject(respuesta);
+            })
+        }
 
-                            }
+        let cambiarRegistrosBd = (id, body, rutaImagen) => {
+            return new Promise ((resolve, reject) => {
+                let datos = {
+                    imagen: rutaImagen,
+                }
 
-                            let respuesta = {
+                //Actualizamos en MongoDB
+                //https://mongoosejs.com/docs/api.html#model_Model.findByIdAndUpdate
+                Logo.findByIdAndUpdate(id, datos, {new:true, runValidators:true}, ( err, data) =>{
+
+                    if(err){
+
+                        let respuesta = {
+
                             res: res,
-                            data: data
-                            }    
-                            resolve(respuesta)
-                        })
-                    })        
-                }
-                // 04 SINCRONIZANDO PROMESAS
-                validarCambio(req, rutaImg).then((rutaImg) =>
-                {
-                    cambiarRegistroBD(id, rutaImg).then(respuesta =>
-                    {
-                        console.log("res",respuesta)
-                        respuesta["res"].json({
-                        status: 200,
-                        data: respuesta["data"],
-                        mensaje: "El Logo ha sido actualizado con exito"
-                        })
-                    }).catch((respuesta =>
-                    {
-                        respuesta["err"].json({
-                        status: 400,
-                        err: respuesta["err"],
-                        mensaje: "Error al editar el Logo "
-                        })
-                    }))
-                }).catch((respuesta =>
-                {
-                    respuesta["res"].json({
-                    status: 400,
-                    mensaje: respuesta["mensaje"]
+                            error: error
+                        }
+
+                        reject(respuesta);
+
+                    }        
+
+                    let respuesta = {
+
+                        res: res,
+                        data: data 
+                    }
+
+                    resolve(respuesta);
                 })
-                }))
-               
+            })
+        }
+
+        /*=============================================
+        SINCRONIZAMOS LAS PROMESAS
+        =============================================*/
+
+        validarCambioImg(req, rutaImagen).then(rutaImagen => {
+
+            cambiarRegistrosBd(id, body, rutaImagen).then(respuesta =>{
+
+                respuesta["res"].json({
+
+                    status:200,
+                    data: respuesta["data"],
+                    mensaje:"El modulo ha sido actualizado con éxito"
+
+                })
+
+            }).catch( respuesta => {
+
+                respuesta["res"].json({
+
+                    status:400,
+                    err: respuesta["err"],
+                    mensaje:"Error al editar el modulo"
+
+                })
+
+
+            })
+
+        }).catch(respuesta => {
+
+            respuesta["res"].json({
+
+                status:400,
+                mensaje:respuesta["mensaje"]
+
+            })
+
         })
+    })
+
+}
+
+
+let createData = (req, res) => {
+    
+
+    if(!req.files){
+        return res.json({
+            status: 500,
+            mensaje: "La imagen no puede ir vacía"
+        })
+    }
+
+    let imagen = req.files.imagen;
+
+    // SE VALIDAN LAS EXTENSIONES DE LA IMAGEN
+
+    if(imagen.mimetype != 'image/jpeg' && imagen.mimetype != 'image/png' 
+        && imagen.mimetype != 'image/JPEG' && imagen.mimetype != 'image/PNG'){
+
+        return res.json({
+
+            status:400,
+            mensaje: "la imagen debe ser formato JPG o PNG"
+            
+        })
+    }
+
+    //Validamos el tamaño del imagen
+
+    if(imagen.size > 2000000){
+
+        return res.json({
+
+            status:400,
+            mensaje: "la imagen debe tener un peso inferior a 2MB" 
+            
+        })
+    }
+
+    //Cambiar nombre al archivo
+
+    let nombre = Math.floor(Math.random()*10000);
+
+    //Capturar la extensión del archivo
+
+    let extension = imagen.name.split('.').pop();
+
+    // Movemos la imagen a la carpeta
+
+    imagen.mv(`./archivos/navbar/logo/${nombre}.${extension}`, err => {
+
+        if(err){
+            return res.json({
+                status: 500,
+                mensaje: "Error al guardar la imagen",
+                err
+            })
+        }
+
+
+        //Obtenemos los datos del formulario para pasarlos al modelo
+
+        let datosLogo = new Logo({
+        
+            imagen:`${nombre}.${extension}`,
+
+        })
+
+        //Guardamos en MongoDB
+
+        datosLogo.save((err, data)=>{
+
+            if(err){
+
+                return res.json({
+                    status:400,
+                    mensaje: "Error al almacenar el logo del módulo",
+                    err
+                })
+
+            }
+
+            res.json({
+
+                status:200,
+                data,
+                mensaje:"El módulo ha sido creado con éxito"
+
+            })
+
+        })
+
+    })
 }
 
 
@@ -262,7 +367,8 @@ EXPORTAMOS FUNCIONES DEL CONTROLADOR
 ========================== */
 module.exports = {
     showDataLogo,
-    updateLogo,
-    mostrarImg
+    editarData,
+    mostrarImg,
+    createData
 }
 
