@@ -62,7 +62,7 @@ let crearData = (req, res) => {
 
 			return res.json({
 				status:400,
-				mensaje: "Error al almacenar al usuario",
+				mensaje: "Error al almacenar al administrador",
 				err
 			})
 
@@ -72,7 +72,7 @@ let crearData = (req, res) => {
 
 			status:200,
 			data,
-			mensaje:"El módulo ha sido creado con éxito"
+			mensaje:"El administrador ha sido creado con éxito"
 
 		})
 
