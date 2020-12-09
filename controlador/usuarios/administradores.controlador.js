@@ -1,6 +1,9 @@
 // IMPORTAMOS EL MODELO
 const Administradores = require('../../modelo/usuarios/administradores.modelo');
-
+//requerimos para toke
+const jwt = require('jsonwebtoken')
+//  Requerimos el móduo para encriptar contraseñas
+const bcrypt = require('bcrypt');
 /*=============================================
 =                     GET                     =
 =============================================*/
@@ -51,7 +54,7 @@ let crearData = (req, res) => {
 	let administradores = new Administradores({
 	
 		user: body.user,
-		password: body.password
+		password: bcrypt.hashSync(body.password,10)
 	})
 
 	//Guardamos en MongoDB
@@ -86,8 +89,8 @@ let login = (req, res) => {
     //Obtenemos el cuerpo del formulario
     let body = req.body;
     //Recorremos la base de datos en busqueda de coincidencia con el usuario
-    Clientes.findOne({
-        mail: body.mail
+    Administradores.findOne({
+        user: body.user
     }, (err, data) => {
         if (err) {
             return res.json({

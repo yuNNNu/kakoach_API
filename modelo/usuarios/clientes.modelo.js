@@ -23,4 +23,14 @@ let userSchema = new Schema({
 
 })
 
+
+// evitar devolver password
+userSchema.methods.toJSON = function() 
+{
+	let user = this;
+	let userObject = user.toObject();
+	delete userObject.password;
+	return userObject;
+}
+
 module.exports = mongoose.model("clientes", userSchema);

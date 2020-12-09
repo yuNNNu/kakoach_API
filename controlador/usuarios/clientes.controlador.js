@@ -1,12 +1,10 @@
 // IMPORTAMOS EL MODELO
 const Clientes = require('../../modelo/usuarios/clientes.modelo');
-// Requerimos el modulo para generar token 
-const jwt = require('jsonwebtoken')
+//  Requerimos el móduo para encriptar contraseñas
+const bcrypt = require('bcrypt');
 /*=============================================
 =                     GET                     =
 =============================================*/
-
-
 let mostrarData = (req, res) => {
 
 	Clientes.find({}).exec((err, data) => {
@@ -54,7 +52,7 @@ let crearData = (req, res) => {
 		nombre: body.nombre,
 		apellido: body.apellido,
 		mail: body.mail,
-		password: body.password
+		password: bcrypt.hashSync(body.password,10)
 	})
 
 	//Guardamos en MongoDB
@@ -75,7 +73,7 @@ let crearData = (req, res) => {
 
 			status:200,
 			data,
-			mensaje:"El módulo ha sido creado con éxito"
+			mensaje:"El usuario ha sido creado con éxito"
 
 		})
 

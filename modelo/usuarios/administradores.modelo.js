@@ -15,4 +15,13 @@ let adminSchema = new Schema({
 
 })
 
+// evitar devolver password
+adminSchema.methods.toJSON = function() 
+{
+	let admin = this;
+	let adminObject = admin.toObject();
+	delete adminObject.password;
+	return adminObject;
+} 
+
 module.exports = mongoose.model("admins", adminSchema);
