@@ -106,7 +106,7 @@ let loginCliente = (req, res) => {
             })
         }
         //Validamos que la contraseña sea correcta
-        if (body.password != data.password) {
+        if (!bcrypt.compareSync(body.password, data.password)) {
             return res.json({
                 status: 400,
                 mensaje: "La contraseña es incorrecta",

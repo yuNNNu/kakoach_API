@@ -1,9 +1,10 @@
 // IMPORTAMOS EL MODELO
 const Administradores = require('../../modelo/usuarios/administradores.modelo');
-//requerimos para toke
-const jwt = require('jsonwebtoken')
 //  Requerimos el móduo para encriptar contraseñas
 const bcrypt = require('bcrypt');
+//requerimos para toke
+const jwt = require('jsonwebtoken')
+
 /*=============================================
 =                     GET                     =
 =============================================*/
@@ -87,11 +88,14 @@ FUNCION LOGIN
 ========================== */
 let login = (req, res) => {
     //Obtenemos el cuerpo del formulario
-    let body = req.body;
+	let body = req.body;
+	
     //Recorremos la base de datos en busqueda de coincidencia con el usuario
     Administradores.findOne({
         user: body.user
-    }, (err, data) => {
+	}, (err, data) =>
+	{
+			console.log(data)
         if (err) {
             return res.json({
                 status: 500,
@@ -108,7 +112,7 @@ let login = (req, res) => {
             })
         }
         //Validamos que la contraseña sea correcta
-        if (body.password != data.password) {
+        if (!bcrypt.compareSync(body.password, data.password)) {
             return res.json({
                 status: 400,
                 mensaje: "La contraseña es incorrecta",
