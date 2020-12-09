@@ -7,7 +7,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const fileUpload = require('express-fileupload');
-const cors = require('cors');
+const cors = require('cors')
 /*=============================================
 =VARIABLE PARA LAS FUNCIONALIDADES DE EXPRESS =
 =============================================*/
@@ -26,10 +26,8 @@ app.use(bodyParser.json({limit:'10mb', extend:true}));
 =============================================*/
 
 app.use(fileUpload());
-/*=============================================
-=        EJECUTANDO CORS                      =
-=============================================*/
 app.use(cors());
+
 /*=============================================
 =        IMPORTACION DE LAS RUTAS             =
 

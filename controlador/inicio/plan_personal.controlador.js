@@ -3,6 +3,8 @@ IMPORTAMOS EL MODELO
 =============================================*/
 
 const plan = require('../../modelo/inicio/plan_personal.modelo')
+const fs = require('fs');
+const path = require('path');
 /*=============================================
 FUNCIÓN GET
 =============================================*/
@@ -163,12 +165,128 @@ let updatePersonalPlan = (req, res) =>
         })
 }
 
+let createData = (req, res) => {
+    
+    let body = req.body;
+
+    if(!req.files){
+        return res.json({
+            status: 500,
+            mensaje: "La imagen no puede ir vacía"
+        })
+    }
+
+    let imagen = req.files.imagen;
+
+    // SE VALIDAN LAS EXTENSIONES DE LA IMAGEN
+
+    if(imagen.mimetype != 'image/jpeg' && imagen.mimetype != 'image/png' 
+        && imagen.mimetype != 'image/JPEG' && imagen.mimetype != 'image/PNG'){
+
+        return res.json({
+
+            status:400,
+            mensaje: "la imagen debe ser formato JPG o PNG"
+            
+        })
+    }
+
+    //Validamos el tamaño del imagen
+
+    if(imagen.size > 2000000){
+
+        return res.json({
+
+            status:400,
+            mensaje: "la imagen debe tener un peso inferior a 2MB" 
+            
+        })
+    }
+
+    //Cambiar nombre al archivo
+
+    let nombre = Math.floor(Math.random()*10000);
+
+    //Capturar la extensión del archivo
+
+    let extension = imagen.name.split('.').pop();
+
+    // Movemos la imagen a la carpeta
+
+    imagen.mv(`./archivos/inicio/imgplanprincipal/${nombre}.${extension}`, err => {
+
+        if(err){
+            return res.json({
+                status: 500,
+                mensaje: "Error al guardar la imagen",
+                err
+            })
+        }
+
+
+        //Obtenemos los datos del formulario para pasarlos al modelo
+
+        let datosPlan = new plan({
+        
+            imagen:`${nombre}.${extension}`,
+            titulo:body.titulo,
+            descripcion:body.descripcion,
+            valor: body.valor,
+            pros: body.pros
+
+        })
+
+        //Guardamos en MongoDB
+
+        datosPlan.save((err, data)=>{
+
+            if(err){
+
+                return res.json({
+                    status:400,
+                    mensaje: "Error al almacenar la imagen principal, título y párrafo del módulo",
+                    err
+                })
+
+            }
+
+            res.json({
+
+                status:200,
+                data,
+                mensaje:"El módulo ha sido creado con éxito"
+
+            })
+
+        })
+
+    })
+}
+
+let mostrarImg = (req, res) => {
+    let imagen = req.params.imagen;
+    let rutaImagen = `./archivos/inicio/imgplanprincipal/${imagen}`;
+
+    fs.exists(rutaImagen, exists => {
+        if(!exists){
+            return res.json({
+                status: 400,
+                mensaje: "La imagen no existe"
+            })
+        }
+
+        res.sendFile(path.resolve(rutaImagen));
+
+    })
+}
 
 /*========================
 EXPORTAMOS FUNCIONES DEL CONTROLADOR
 ========================== */
 module.exports = {
     showPlan,
-    updatePersonalPlan
+    updatePersonalPlan,
+    createData,
+    mostrarImg
 }
 

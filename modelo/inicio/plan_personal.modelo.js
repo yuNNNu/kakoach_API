@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 
 let Schema = mongoose.Schema;
 let persosnalPlanSchema = new Schema({
-    rutaImagen: {
+    imagen: {
         type: String,
         required: [true, "La imagen es obligatoria"]
     },
@@ -20,6 +20,10 @@ let persosnalPlanSchema = new Schema({
     valor: {
         type: Number,
         required: [true, "El valor es obligatorio"]
+    },
+    pros: {
+        type: Array,
+        required: [true, "Los pros son obligatorios"]
     }
 })
 /*=============================================
