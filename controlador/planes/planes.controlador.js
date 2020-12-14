@@ -58,102 +58,123 @@ FUNCIÓN POST PLANS
 =============================================*/
 let newPlan = (req, res) =>
 {
+  // SE OBTIENE CUERPO DEL FORMULARIO
+  let body = req.body;
+  // SE CONSULTA SI VIENE CONSIGO LA IMAGEN PRINCIPAL
+  if (!req.files.imagen) {
+    return res.json({
+      status: 500,
+      mensaje: "La imagen no puede ir vacía",
+    });
+  }
+  if (!req.files.pdf) {
+    return res.json({
+      status: 500,
+      mensaje: "El archivo PDF no puede ir vacio",
+    });
+  }
 
-    // SE OBTIENE CUERPO DEL FORMULARIO 
-    let body = req.body;
-    	// SE CONSULTA SI VIENE CONSIGO LA IMAGEN PRINCIPAL
-	if(!req.files){
-		return res.json({
-			status: 500,
-			mensaje: "La imagen no puede ir vacía"
-		})
-	}
+  let imagen = req.files.imagen;
+  let pdf = req.files.pdf;
+  // SE VALIDAN LAS EXTENSIONES DE LA IMAGEN
 
-    let imagen = req.files.imagen;
-    // SE VALIDAN LAS EXTENSIONES DE LA IMAGEN
+  if (
+    imagen.mimetype != "image/jpeg" &&
+    imagen.mimetype != "image/png" &&
+    imagen.mimetype != "image/JPEG" &&
+    imagen.mimetype != "image/PNG"
+  ) {
+    return res.json({
+      status: 400,
+      mensaje: "la imagen debe ser formato JPG o PNG",
+    });
+  }
+  // SE VALIDAN LAS EXTENSIONES DEL PDF
+  if (pdf.mimetype != "application/pdf") {
+    return res.json({
+      status: 400,
+      mensaje: "El archivo debe ser formato pdf",
+    });
+  }
 
-	if(imagen.mimetype != 'image/jpeg' && imagen.mimetype != 'image/png' 
-		&& imagen.mimetype != 'image/JPEG' && imagen.mimetype != 'image/PNG'){
+  //Validamos el tamaño del imagen
 
-		return res.json({
+  if (imagen.size > 2000000) {
+    return res.json({
+      status: 400,
+      mensaje: "la imagen debe tener un peso inferior a 2MB",
+    });
+  }
+  //Validamos el tamaño del pdf
+  if (pdf.size >= 3000000) {
+    return res.json({
+      status: 400,
+      mensaje: "El pdf debe tener un peso inferior o igual a 3MB",
+    });
+  }
+  //Cambiar nombre a los archivos
 
-			status:400,
-			mensaje: "la imagen debe ser formato JPG o PNG"
-			
-		})
+  let nombreImg = Math.floor(Math.random() * 10000);
+  let nombrePdf = Math.floor(Math.random() * 97000);
+  //Capturar la extensión del archivo img
+    let extensionImg = imagen.name.split(".").pop();
+  //Capturar la extensión del archivo pdf
+    let extensionPdf = pdf.name.split(".").pop();
+  // Movemos la imagen a la carpeta
+  imagen.mv(`./archivos/planes/img-plan/${nombreImg}.${extensionImg}`, (err) => {
+    if (err) {
+      return res.json({
+        status: 500,
+        mensaje: "Error al guardar la imagen",
+        err,
+      });
     }
-    //Validamos el tamaño del imagen
+      pdf.mv(`./archivos/planes/pdfs/${ nombrePdf }.${ extensionPdf }`, (errP) =>
+      {
+        if (errP) {
+          return res.json({
+            status: 500,
+            mensaje: "Error al guardar el archivo pdf",
+            err,
+          });
+        }
 
-	if(imagen.size > 2000000){
+        //Obtenemos los datos del formulario para pasarlos al modelo
 
-		return res.json({
+        let plan = new planes({
+          imagen: `${nombreImg}.${extensionImg}`,
+          type: body.type,
+          nombre: body.nombre,
+          descripcion: body.descripcion,
+          precio: body.precio,
+          nivel: body.nivel,
+          pros: body.pros,
+          archivo: `${nombrePdf}.${extensionPdf}`
+        });
 
-			status:400,
-			mensaje: "la imagen debe tener un peso inferior a 2MB" 
-			
-		})
-    }
-    //Cambiar nombre al archivo
+        //Guardamos en MongoDB
 
-	let nombre = Math.floor(Math.random()*10000);
+        plan.save((err, data) => {
+          if (err) {
+            return res.json({
+              status: 400,
+              mensaje: "Error al almacenar el plan",
+              err,
+            });
+          }
 
-	//Capturar la extensión del archivo
-
-    let extension = imagen.name.split('.').pop();
-    // Movemos la imagen a la carpeta
-
-	imagen.mv(`./archivos/planes/img-plan/${nombre}.${extension}`, err => {
-
-		if(err){
-			return res.json({
-				status: 500,
-				mensaje: "Error al guardar la imagen",
-				err
-			})
-		}
+          res.json({
+            status: 200,
+            data,
+            mensaje: "El plan ha sido creado con éxito",
+          });
+        });
+      })
 
 
-		//Obtenemos los datos del formulario para pasarlos al modelo
-
-		let plan = new planes({
-		
-			imagen:`${nombre}.${extension}`,
-            type: body.type,
-			nombre:body.nombre,
-			descripcion :body.descripcion,
-			precio:body.precio,
-			nivel:body.nivel,
-			pros:body.pros
-
-		})
-
-		//Guardamos en MongoDB
-
-		plan.save((err, data)=>{
-
-			if(err){
-
-				return res.json({
-					status:400,
-					mensaje: "Error al almacenar el plan",
-					err
-				})
-
-			}
-
-			res.json({
-
-				status:200,
-				data,
-				mensaje:"El plan ha sido creado con éxito"
-
-			})
-
-		})
-
-	})
+  });
 }
-
+// delete
 let deletePlan = (req, res) => {
 
 	// Se captura id de la tarjeta a eliminar

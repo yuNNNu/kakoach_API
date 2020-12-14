@@ -12,7 +12,7 @@ ADMINISTRACIÓN DE CARPETAS Y ARCHIVOS EN NODEJS
 // const { rejects } = require('assert');
 
 /*=============================================
-FUNCIÓN GET
+PETICION GET
 =============================================*/
 
 let showData = (req, res)=>{
@@ -60,7 +60,7 @@ let showData = (req, res)=>{
 }
 
 /*=============================================
-FUNCIÓN PUT
+PETICION PUT
 =============================================*/
 
 let updateData = (req, res) =>  {
@@ -167,6 +167,9 @@ let updateData = (req, res) =>  {
     })
     
 }
+/*=============================================
+PETICION POST
+=============================================*/
 
 let createData = (req, res) => {
 
@@ -215,8 +218,31 @@ let createData = (req, res) => {
     })
 
 }
-
-
+/*=============================================
+PETICION DELETE
+=============================================*/
+let borrarData = (req, res) =>
+{
+    //Borramos registro en mongoDB
+    //https://mongoosejs.com/docs/api.html#model_Model.findByIdAndRemove
+    footer.findByIdAndRemove(id, (err, data) =>
+    {
+        if (err)
+        {
+            return res.json({
+                status: 500,
+                mensaje: "Error al borrar el footer",
+                err
+            })
+        }
+        res.json({
+            status: 200,
+            mensaje: "El footer fue eliminado correctamente"
+        })
+        
+    })
+    
+}
 
 
 /*========================
