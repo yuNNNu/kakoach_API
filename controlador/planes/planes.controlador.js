@@ -241,45 +241,41 @@ let deletePlan = (req, res) => {
 /*=============================================
 =      PETICION    PUT                     =
 =============================================*/
+let updateData = (req, res) =>  {
+/*=============================================
+FUNCIÓN PUT
+=============================================*/
+    // caputaramos id de beneficio
+    let id = req.params.id;
+    // obtenemos el cuerpo del formulario
+    let body = req.body;
+    //01  VALIDAMOS EXISTENCIA DE BENEFICIO
+    Categoria.findById(id, (err, data) =>
+    {       
+         //Validammos que no haya error
+        if (err) {
+            return res.json({
+                status: 500,
+                mensaje: "Error en el servidor",
+                err
+            })
+        }
+        //Validamos que la beneficio exista
+        if (!data) {
+            return res.json({
+                status: 404,
+                mensaje: "No existe el nivel en la base de datos",
+                err
+            })
+        }
 
-let updatePlan = (req, res) => {
-
-	//Capturamos el id del slide a actualizar
-
-	let id = req.params.id;
-
-	//Obtenemos el cuerpo del formulario
-
-	let body = req.body;
-
-	planes.findById(id, (err, data) => {
-		if(err){
-			return res.json({
-				status: 500,
-				mensaje: "Error en el servidor",
-				err
-			})
-		}
-
-		if(!data){
-
-			return res.json({
-				status: 400,
-				mensaje: "El plan no existe en la Base de Datos"
-			})
-
-		}
-
-		let rutaImagen = data.imagen;
-
-		/*=============================================
-		    VALIDAMOS QUE EXISTAN CAMBIO DE IMAGEN
-		=============================================*/
-
-		let validarCambioImg = (req, rutaImagen) => {
-
-			return new Promise((resolve, reject) => {
-
+    
+        let rutaImagen = data.imagen;   
+     
+        // validar img
+        let validarCambio = (req, rutaImagen) => {
+            return new Promise((resolve, reject) => {
+                
 				if(req.files){
 
 					//Se captura la imagen
@@ -319,7 +315,7 @@ let updatePlan = (req, res) => {
 
 					let extension = imagen.name.split('.').pop();
 
-					imagen.mv(`./archivos/planes/img-plan/${nombre}.${extension}`, err =>{
+					imagen.mv(`./archivos/planes/category/${nombre}.${extension}`, err =>{
 
 						if(err){
 
@@ -335,9 +331,9 @@ let updatePlan = (req, res) => {
 
 						//Borramos la antigua imagen
 
-						if(fs.existsSync(`./archivos/planes/img-plan/${rutaImagen}`)){
+						if(fs.existsSync(`./archivos/planes/category/${rutaImagen}`)){
 
-							fs.unlinkSync(`./archivos/planes/img-plan/${rutaImagen}`);
+							fs.unlinkSync(`./archivos/planes/category/${rutaImagen}`);
 
 						}
 
@@ -349,121 +345,88 @@ let updatePlan = (req, res) => {
 
 					})	
 				}else{
-
 					resolve(rutaImagen);
 				}
-			})
-		}
+               
+            })
+        }
 
-		let type = data.type;
-		let nivel = data.nivel;
-		let pros = data.pros;
-		let nombre = data.nombre;
-		let descripcion = data.descripcion;
-		let precio = data.precio;
-		let cambiarRegistrosBd = (id, body, rutaImagen, type, nivel, pros, nombre, descripcion, precio) => {
-			return new Promise ((resolve, reject) => {
+        let cambiarRegistroBd = (id, body, rutaImagen, data) => {
+            return new Promise((resolve, reject) => {
+              let datos = {
+                titulo: tit,
+                descripcion: desc,
+                type: data.type,
+                click: data.click,
+                imagen: rutaImagen,
+              };
+              //Actualizamos en MongoDB
+              //https://mongoosejs.com/docs/api.html#model_Model.findByIdAndUpdate
+              Categoria.findByIdAndUpdate(
+                id,
+                datos,
+                { new: true, runValidators: true },
+                (err, data) => {
+                  if (err) {
+                    let respuesta = {
+                      res: res,
+                      err: err,
+                    };
 
-				let temp = body.pros;
+                    reject(respuesta);
+                  }
 
-				if(body.nombre == undefined){
-					nombre = data.nombre
-				}else{
-					nombre = body.nombre
-				}	
+                  let respuesta = {
+                    res: res,
+                    data: data,
+                  };
 
-				if(body.descripcion == undefined){
-					descripcion = data.descripcion
-				}else{
-					descripcion = body.descripcion
-				}
+                  resolve(respuesta);
+                }
+              );
+            })
+        }
 
-				if(body.precio == undefined){
-					precio = data.precio
-				}else{
-					precio = body.precio
-				}
+        /*=============================================
+                SINCRONIZAMOS LAS PROMESAS
+        =============================================*/
 
+        validarCambio(req, rutaImagen).then(rutaImagen => {
 
-				let datos = {
-					type: type,
-					nivel: nivel,
-					imagen: rutaImagen,
-					nombre: nombre,
-					descripcion: descripcion,
-					precio: precio,
-					pros: temp
-				}
+            cambiarRegistroBd(id, body,rutaImagen, data).then(respuesta =>{
 
+                respuesta["res"].json({
 
-				//Actualizamos en MongoDB
-				//https://mongoosejs.com/docs/api.html#model_Model.findByIdAndUpdate
-				planes.findByIdAndUpdate(id, datos, {new:true, runValidators:true}, ( err, data) =>{
+                    status:200,
+                    data: respuesta["data"],
+                    mensaje:"La categoria fue editada con éxito"
 
-					if(err){
+                })
 
-						let respuesta = {
+            }).catch( respuesta => {
 
-							res: res,
-							error: err
-						}
+                respuesta["res"].json({
 
-						reject(respuesta);
+                    status:400,
+                    err: respuesta["err"],
+                    mensaje:"Error al editar la categoria"
 
-					}		
-
-					let respuesta = {
-
-						res: res,
-						data: data 
-					}
-
-					resolve(respuesta);
-				})
-			})
-		}
-
-		/*=============================================
-		SINCRONIZAMOS LAS PROMESAS
-		=============================================*/
-
-		validarCambioImg(req, rutaImagen).then((rutaImagen) => {
-
-			cambiarRegistrosBd(id, body, rutaImagen, type, nivel, pros).then(respuesta =>{
-
-				respuesta["res"].json({
-
-					status:200,
-					data: respuesta["data"],
-					mensaje:"El modulo ha sido actualizado con éxito"
-
-				})
-
-			}).catch( respuesta => {
-
-				respuesta["res"].json({
-
-					status:400,
-					err: respuesta["err"],
-					mensaje:"Error al editar el modulo"
-
-				})
+                })
 
 
-			})
+            })
 
-		}).catch(respuesta => {
+        }).catch(respuesta => {
 
-			respuesta["res"].json({
+            respuesta["res"].json({
 
-				status:400,
-				mensaje:respuesta["mensaje"]
+                status:400,
+                mensaje:respuesta["mensaje"]
 
-			})
+            })
 
-		})
-	})
-
+        })
+    })   
 }
 /*=============================================
 =      PETICION  GET (MOSTRAR FOTO)              =
@@ -491,6 +454,6 @@ module.exports = {
     showPlanes,
     newPlan,
     deletePlan,
-	updatePlan,
+	updateData,
 	mostrarImg
 }

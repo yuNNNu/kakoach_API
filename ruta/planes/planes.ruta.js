@@ -8,7 +8,7 @@ const Planes = require('../../controlador/planes/planes.controlador');
 app.get('/show-planes', Planes.showPlanes)
 app.post('/new-plan', Planes.newPlan )
 app.delete('/delete-plan/:id', Planes.deletePlan);
-app.put('/update-plan/:id', Planes.updatePlan);
+app.put('/update-plan/:id', Planes.updateData);
 app.get('/show-plan/:imagen', Planes.mostrarImg)
 /*========================
 EXPORTAMOS RUTA

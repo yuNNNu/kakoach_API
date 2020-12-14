@@ -92,8 +92,7 @@ FUNCIÓN PUT
 
     
         let rutaImagen = data.imagen;   
-        let desc = data.descripcion;
-        let tit = data.titulo;
+     
         // validar img
         let validarCambio = (req, rutaImagen) => {
             return new Promise((resolve, reject) => {
@@ -153,7 +152,7 @@ FUNCIÓN PUT
 
 						//Borramos la antigua imagen
 
-						if(fs.existsSync(`./archivos/planes/category/imgprincipal/${rutaImagen}`)){
+						if(fs.existsSync(`./archivos/planes/category/${rutaImagen}`)){
 
 							fs.unlinkSync(`./archivos/planes/category/${rutaImagen}`);
 
@@ -173,46 +172,39 @@ FUNCIÓN PUT
             })
         }
 
-        let cambiarRegistroBd = (id, body, rutaImagen,desc,tit, data) => {
+        let cambiarRegistroBd = (id, body, rutaImagen, data) => {
             return new Promise((resolve, reject) => {
-
-                if(body.descripcion == undefined || body.descripcion == ""){
-                    desc = desc;
-                }else{
-                    desc = body.descripcion;
-                }
-                if(body.titulo == undefined || body.titulo == ""){
-                    tit = tit;
-                }else{
-                    tit = body.titulo;
-                }
-
-                let datos = {
-                    titulo: tit,
-                    descripcion: desc,
-                    type: data.type,
-                    click: data.click,
-                    imagen: rutaImagen
-                }
-
-                Categoria.findByIdAndUpdate(id, datos, {new:true, runValidators:true}, (err, data) => {
-                    if(err){
-                        let respuesta = {
-                            res: res,
-                            err: err
-                        }
-
-                        reject(respuesta)
-                    }
-
+              let datos = {
+                titulo: body.titulo,
+                descripcion: body.descripcion,
+                type: data.type,
+                click: data.click,
+                imagen: rutaImagen,
+              };
+              //Actualizamos en MongoDB
+              //https://mongoosejs.com/docs/api.html#model_Model.findByIdAndUpdate
+              Categoria.findByIdAndUpdate(
+                id,
+                datos,
+                { new: true, runValidators: true },
+                (err, data) => {
+                  if (err) {
                     let respuesta = {
-                        res: res,
-                        data: data
-                    }
+                      res: res,
+                      err: err,
+                    };
 
-                    resolve(respuesta);
-                })
+                    reject(respuesta);
+                  }
 
+                  let respuesta = {
+                    res: res,
+                    data: data,
+                  };
+
+                  resolve(respuesta);
+                }
+              );
             })
         }
 
@@ -222,7 +214,7 @@ FUNCIÓN PUT
 
         validarCambio(req, rutaImagen).then(rutaImagen => {
 
-            cambiarRegistroBd(id, body, tit, desc,rutaImagen, data).then(respuesta =>{
+            cambiarRegistroBd(id, body,rutaImagen, data).then(respuesta =>{
 
                 respuesta["res"].json({
 
