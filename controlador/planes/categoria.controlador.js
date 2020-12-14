@@ -372,7 +372,25 @@ let createData = (req, res) => {
     })
 }
 
+/*=============================================
+=      PETICION  GET (MOSTRAR FOTO)              =
+=============================================*/
+let mostrarImg = (req, res) => {
+	let imagen = req.params.imagen;
+	let rutaImagen = `./archivos/planes/category/${imagen}`;
 
+	fs.exists(rutaImagen, exists => {
+		if(!exists){
+			return res.json({
+				status: 400,
+				mensaje: "La imagen no existe"
+			})
+		}
+
+		res.sendFile(path.resolve(rutaImagen));
+
+	})
+}
 
 
 /*========================
@@ -381,5 +399,6 @@ EXPORTAMOS FUNCIONES DEL CONTROLADOR
 module.exports = {
     showData,
     updateData,
-    createData
+    createData,
+    mostrarImg
 }
