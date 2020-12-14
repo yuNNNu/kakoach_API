@@ -22,6 +22,9 @@ let categoriaSchema = new Schema({
     click: {
 		type: String,
 		required:[true, "La función del click es obligatoria"]
+	}, imagen: {
+		type: String,
+		required: [true,"La imagen imagen es obligatoria"]
 	}
 })
 /*=============================================

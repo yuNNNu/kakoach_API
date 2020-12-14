@@ -7,7 +7,7 @@ const planes = require('../../modelo/planes/planes.modelo');
 const fs = require('fs');
 const path = require('path');
 /*=============================================
-FUNCIÓN GET ALL PLANS
+PETICION  GET ALL PLANS
 =============================================*/
 
 let showPlanes = (req, res)=>{
@@ -54,7 +54,7 @@ let showPlanes = (req, res)=>{
 
 }
 /*=============================================
-FUNCIÓN POST PLANS
+PETICION  POST PLANS
 =============================================*/
 let newPlan = (req, res) =>
 {
@@ -174,7 +174,9 @@ let newPlan = (req, res) =>
 
   });
 }
-// delete
+/*=============================================
+PETICION  DELETE PLANS
+=============================================*/
 let deletePlan = (req, res) => {
 
 	// Se captura id de la tarjeta a eliminar
@@ -236,9 +238,8 @@ let deletePlan = (req, res) => {
 
 	})
 }
-
 /*=============================================
-=                     PUT                     =
+=      PETICION    PUT                     =
 =============================================*/
 
 let updatePlan = (req, res) => {
@@ -464,7 +465,25 @@ let updatePlan = (req, res) => {
 	})
 
 }
+/*=============================================
+=      PETICION  GET (MOSTRAR FOTO)              =
+=============================================*/
+let mostrarImg = (req, res) => {
+	let imagen = req.params.imagen;
+	let rutaImagen = `./archivos/planes/img-plan/${imagen}`;
 
+	fs.exists(rutaImagen, exists => {
+		if(!exists){
+			return res.json({
+				status: 400,
+				mensaje: "La imagen no existe"
+			})
+		}
+
+		res.sendFile(path.resolve(rutaImagen));
+
+	})
+}
 /*========================
 EXPORTAMOS FUNCIONES DEL CONTROLADOR
 ========================== */
@@ -472,5 +491,6 @@ module.exports = {
     showPlanes,
     newPlan,
     deletePlan,
-    updatePlan
+	updatePlan,
+	mostrarImg
 }
