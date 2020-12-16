@@ -120,7 +120,7 @@ let editarData = (req, res) => {
         let validarCambio = (body, rutaUrl) => {  
             return new Promise((resolve, reject) =>
             {
-                if (body.url == undefined)
+                if (body.url == undefined || body.url == "")
                 {
                    resolve(rutaUrl)
                 } else
@@ -163,7 +163,7 @@ let editarData = (req, res) => {
         }
 
          // 04 SINCRONIZANDO PROMESAS
-        validarCambio(body, rutaUrl).then((titulo) => {
+        validarCambio(body, rutaUrl).then((rutaUrl) => {
             cambiarRegistroBD(id, rutaUrl).then(respuesta => {
                 respuesta["res"].json({
                 status: 200,
