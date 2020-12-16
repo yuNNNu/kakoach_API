@@ -24,6 +24,10 @@ let persosnalPlanSchema = new Schema({
     pros: {
         type: Array,
         required: [true, "Los pros son obligatorios"]
+    },
+    pdf: {
+        type: String,
+        required: [true, "El pdf no puede ir vacio"]
     }
 })
 /*=============================================
