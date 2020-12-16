@@ -46,6 +46,7 @@ app.use(require('./ruta/footer/info_footer.ruta'));
 app.use(require('./ruta/inicio/benefits_inicio.ruta'));
 app.use(require('./ruta/inicio/plan_personal.ruta'));
 app.use(require('./ruta/inicio/principal_img_inicio.ruta'));
+app.use(require('./ruta/inicio/planes_secundarios.ruta'));
 
 /*=============================================
 =               RUTAS DE PLANES               =
