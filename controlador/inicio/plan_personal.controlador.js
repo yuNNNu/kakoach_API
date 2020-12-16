@@ -17,7 +17,7 @@ let showPlan = (req, res) =>
     plan.find({})
         .exec((err, data) =>
         {
-            console.log(data)
+            
             if(err){
 
                 return res.json({
@@ -81,8 +81,7 @@ let updatePersonalPlan = (req, res) => {
     let rutaImg = data.imagen;
     let rutaPdf = data.pdf;
 
-    console.log("rutaImg", rutaImg);
-    console.log("rutaPdf", rutaPdf);
+   
 
     // 02 VALIDAMOS QUE EXISTAN CAMBIOS
     let validarCambioImg = (req, rutaImg) => {
@@ -174,7 +173,7 @@ let updatePersonalPlan = (req, res) => {
             {
                 //Capturamos el archivo
                 let archivoPdf = req.files.pdf;
-                console.log("archivo PDF", archivoPdf)
+               
                 if (archivoPdf.mimetype != "application/pdf")
                 {
                     return res.json({
@@ -205,10 +204,10 @@ let updatePersonalPlan = (req, res) => {
 
                 // CREO NOMBRE DEL ARCHIVO
                 let nombrePdf = Math.floor(Math.random() * 97000);
-                console.log("newName", nombrePdf);
+              
                 //Capturar la extensión del archivo pdf
                 let extensionPdf = archivoPdf.name.split(".").pop();
-                console.log("extension", extensionPdf);
+               
                 archivoPdf.mv(`./archivos/inicio/pdfs/${ nombrePdf }.${ extensionPdf }`, (errP) =>
                 {
                     if (errP)
@@ -248,8 +247,26 @@ let updatePersonalPlan = (req, res) => {
       });
     };
     // 03 ACTUALIZAR REGISTROS
-    let cambiarRegistroBD = (id, rutaImg, rutaPdf, body) => {
-      return new Promise((resolve, reject) => {
+      let cambiarRegistroBD = (id, rutaImg, rutaPdf, body) =>
+      {
+          
+        return new Promise((resolve, reject) =>
+        {
+            
+            if (!Number(body.valor))
+            {
+               return res.json({
+                            status: 400,
+                            mensaje: "Error, el valor debe ser numerico"
+                });
+                let respuesta = {
+                    res: res,
+                    mensaje: "Error, el valor debe ser numerico"
+
+                }
+                reject(respuesta);
+            }
+         
         let datosplan = {
           imagen: rutaImg,
           titulo: body.titulo,
@@ -298,23 +315,25 @@ let updatePersonalPlan = (req, res) => {
                   mensaje: "El plan personal ha sido actualizado con exito",
                 });
               })
-              .catch((respuesta) => {
-                respuesta["err"].json({
-                  status: 400,
-                  err: respuesta["err"],
-                  mensaje: "Error al editar el plan personal",
+                .catch((respuesta) =>
+                {
+                  
+                    respuesta["res"].json({
+                    status: 400,
+                    err: respuesta["err"],
+                    mensaje: "Error al editar el plan personal",
+                    });
                 });
-              });
           })
           .catch((respuesta) => {
-            respuesta["err"].json({
+            respuesta["res"].json({
               status: 400,
               mensaje: respuesta["mensaje"],
             });
           });
       })
       .catch((respuesta) => {
-        respuesta["err"].json({
+        respuesta["res"].json({
           status: 400,
           mensaje: respuesta["mensaje"],
         });
@@ -426,7 +445,7 @@ let createData = (req, res) => {
             pdf: `${nombrePdf}.${extensionPdf}`
 
         })
-        console.log(datosPlan)
+      
         //Guardamos en MongoDB
 
         datosPlan.save((err, data)=>{

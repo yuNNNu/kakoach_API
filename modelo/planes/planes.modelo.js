@@ -36,7 +36,7 @@ let planesSchema = new Schema({
 		type: String,
 		required:[true, "El nivel es obligatorio"]
 	},
-    archivo: {
+    pdf: {
 		type: String,
 		required:[true, "El archivo es obligatorio"]
 	},

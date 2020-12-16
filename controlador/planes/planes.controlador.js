@@ -149,7 +149,7 @@ let newPlan = (req, res) =>
           precio: body.precio,
           nivel: body.nivel,
           pros: body.pros,
-          archivo: `${nombrePdf}.${extensionPdf}`
+          pdf: `${nombrePdf}.${extensionPdf}`
         });
 
         //Guardamos en MongoDB
@@ -242,15 +242,13 @@ let deletePlan = (req, res) => {
 =      PETICION    PUT                     =
 =============================================*/
 let updateData = (req, res) =>  {
-/*=============================================
-FUNCIÓN PUT
-=============================================*/
+
     // caputaramos id de beneficio
     let id = req.params.id;
     // obtenemos el cuerpo del formulario
     let body = req.body;
-    //01  VALIDAMOS EXISTENCIA DE BENEFICIO
-    Categoria.findById(id, (err, data) =>
+    //01  VALIDAMOS EXISTENCIA DE PLAN
+    planes.findById(id, (err, data) =>
     {       
          //Validammos que no haya error
         if (err) {
@@ -264,105 +262,205 @@ FUNCIÓN PUT
         if (!data) {
             return res.json({
                 status: 404,
-                mensaje: "No existe el nivel en la base de datos",
+                mensaje: "No existe el plan base de datos",
                 err
             })
         }
 
     
-        let rutaImagen = data.imagen;   
+        let rutaImg = data.imagen;
+        let rutaPdf = data.pdf;
      
-        // validar img
-        let validarCambio = (req, rutaImagen) => {
-            return new Promise((resolve, reject) => {
-                
-				if(req.files){
+    // 02 VALIDAMOS QUE EXISTAN CAMBIOS IMG
+    let validarCambioImg = (req, rutaImg) => {
+      return new Promise((resolve, reject) => {
+        if (req.files) {
+          // VALIDACIONES DE IMAGEN
+          if (req.files.imagen) {
+            let imagen = req.files.imagen;
 
-					//Se captura la imagen
+            if (
+              imagen.mimetype != "image/jpeg" &&
+              imagen.mimetype != "image/png" &&
+              imagen.mimetype != "image/JPEG" &&
+              imagen.mimetype != "image/PNG"
+            ) {
+              let respuesta = {
+                res: res,
+                mensaje: "La imagen debe ser formato JPG o PNG",
+              };
+              return res.json({
+                status: 400,
+                mensaje: "la imagen debe ser formato JPG o PNG",
+              });
 
-					let imagen = req.files.imagen;
+              reject(respuesta);
+            }
+            //Validamos el tamaño del imagen
 
-					if(imagen.mimetype != 'image/jpeg' && imagen.mimetype != 'image/png' 
-						&& imagen.mimetype != 'image/JPEG' && imagen.mimetype != 'image/PNG'){
+            if (imagen.size > 2000000) {
+              return res.json({
+                status: 400,
+                mensaje: "la imagen debe tener un peso inferior a 2MB",
+              });
+              let respuesta = {
+                res: res,
+                mensaje: "la imagen debe tener un peso inferior a 2MB",
+              };
+              reject(respuesta);
+            }
+            //Cambiar nombre al archivo
 
-						let respuesta = {
-							res: res,
-							mensaje: "la imagen debe ser formato JPG o PNG"
-				
-						}
+            let nombreImg = Math.floor(Math.random() * 10000);
+            //Capturar la extensión del archivo
+            let extensionImg = imagen.name.split(".").pop();
+            imagen.mv(
+              `./archivos/planes/img-plan/${nombreImg}.${extensionImg}`,
+              (err) => {
+                if (err) {
+                  return res.json({
+                    status: 500,
+                    mensaje: "Error al guardar la imagen",
+                    err,
+                  });
 
-						reject(respuesta);
-					}
-
-					//Validamos el tamaño del archivo
-
-					if(imagen.size > 2000000){
-
-						let respuesta = {
-
-							res: res,
-							mensaje: "la imagen debe ser inferior a 2MB"
-						}
-
-						reject(respuesta);
-					}
-
-					//Cambiar nombre al archivo
-
-					let nombre = Math.floor(Math.random()*10000);
-
-					//Capturar la extensión del archivo
-
-					let extension = imagen.name.split('.').pop();
-
-					imagen.mv(`./archivos/planes/category/${nombre}.${extension}`, err =>{
-
-						if(err){
-
-							let respuesta = {
-
-								res: res,
-								mensaje: "Error al guardar la imagen"
-							}
-
-							reject(respuesta);
-
-						}
-
-						//Borramos la antigua imagen
-
-						if(fs.existsSync(`./archivos/planes/category/${rutaImagen}`)){
-
-							fs.unlinkSync(`./archivos/planes/category/${rutaImagen}`);
-
-						}
-
-						//Damos valor a la nueva imagen
-
-						rutaImagen = `${nombre}.${extension}`;
-
-						resolve(rutaImagen);
-
-					})	
-				}else{
-					resolve(rutaImagen);
-				}
-               
-            })
+                  let respuesta = {
+                    res: res,
+                    mensaje: "Error al guardar la image",
+                  };
+                  reject(respuesta);
+                }
+                //Borramos antiigua imagen
+                if (
+                  fs.existsSync(`./archivos/planes/img-plan/${rutaImg}`)
+                ) {
+                  fs.unlinkSync(
+                    `./archivos/planes/img-plan/${rutaImg}`
+                  ); //Que borre
+                }
+                //Damos valor a nueva imagen
+                rutaImg = `${nombreImg}.${extensionImg}`;
+                resolve(rutaImg);
+              }
+            );
+          } else {
+            
+            resolve(rutaImg);
+          }
+        } else {
+          resolve(rutaImg);
         }
+      });
+    };
+    // VALIDAMOS QUE EXITAN CAMBIOS EN EL PDF
+    let validarCambioPdf = (req, rutaPdf) => {
+        return new Promise((resolve, reject) =>
+        {
+        if (req.files) {
+            if (req.files.pdf)
+            {
+                //Capturamos el archivo
+                let archivoPdf = req.files.pdf;
+                
+                if (archivoPdf.mimetype != "application/pdf")
+                {
+                    return res.json({
+                        status: 400,
+                        mensaje: "El archivo debe ser formato pdf",
+                    });
+                    let respuesta = {
+                        res: res,
+                        mensaje: "El archivo debe ser formato pds"
 
-        let cambiarRegistroBd = (id, body, rutaImagen, data) => {
-            return new Promise((resolve, reject) => {
+                    }
+                    reject(respuesta);
+                }
+                //Validamos el tamaño del pdf
+                if (archivoPdf.size >= 3000000)
+                {
+                    return res.json({
+                        status: 400,
+                        mensaje: "El pdf debe tener un peso inferior o igual a 3MB",
+                    });
+                    let respuesta = {
+                        res: res,
+                        mensaje: "El pdf debe tener un peso inferior o igual a 3MB"
+
+                    }
+                    reject(respuesta);
+                }
+
+                // CREO NOMBRE DEL ARCHIVO
+                let nombrePdf = Math.floor(Math.random() * 97000);
+                
+                //Capturar la extensión del archivo pdf
+                let extensionPdf = archivoPdf.name.split(".").pop();
+                
+                archivoPdf.mv(`./archivos/planes/pdfs/${ nombrePdf }.${ extensionPdf }`, (errP) =>
+                {
+                    if (errP)
+                    {
+                        return res.json({
+                            status: 500,
+                            mensaje: "Error al guardar el archivo pdf",
+                            err,
+                        });
+                        let respuesta = {
+                            res: res,
+                            mensaje: "Error al guardar el archivo pdf"
+
+                        }
+                        reject(respuesta);
+                    }
+                    //Borramos antiigua imagen
+                    if (fs.existsSync(`./archivos/planes/pdfs/${ rutaPdf }`))
+                    {
+                        fs.unlinkSync(`./archivos/planes/pdfs/${ rutaPdf }`); //Que borre
+                    }
+                    rutaPdf = `${ nombrePdf }.${ extensionPdf }`;
+                    resolve(rutaPdf);
+                })
+            
+            } else
+            {
+                resolve(rutaPdf);
+            }
+        } else
+        {
+             resolve(rutaPdf);
+        }
+      });
+    };
+
+        let cambiarRegistroBd = (id, rutaImg, rutaPdf, body) => {
+          return new Promise((resolve, reject) =>
+          {
+            if (!Number(body.precio))
+            {
+               return res.json({
+                            status: 400,
+                            mensaje: "Error, el precio debe ser numerico"
+                });
+                let respuesta = {
+                    res: res,
+                    mensaje: "Error, el precio debe ser numerico"
+
+                }
+                reject(respuesta);
+            }
               let datos = {
-                titulo: tit,
-                descripcion: desc,
-                type: data.type,
-                click: data.click,
-                imagen: rutaImagen,
+                type: body.type,
+                nivel: body.nivel,
+                nombre: body.nombre,
+                descripcion: body.descripcion,
+                precio: body.precio,
+                pros: body.pros,
+                imagen: rutaImg,
+                pdf: rutaPdf
               };
               //Actualizamos en MongoDB
               //https://mongoosejs.com/docs/api.html#model_Model.findByIdAndUpdate
-              Categoria.findByIdAndUpdate(
+              planes.findByIdAndUpdate(
                 id,
                 datos,
                 { new: true, runValidators: true },
@@ -391,30 +489,43 @@ FUNCIÓN PUT
                 SINCRONIZAMOS LAS PROMESAS
         =============================================*/
 
-        validarCambio(req, rutaImagen).then(rutaImagen => {
+        validarCambioImg(req, rutaImg).then((rutaImg) => {
 
-            cambiarRegistroBd(id, body,rutaImagen, data).then(respuesta =>{
+          validarCambioPdf(req, rutaPdf).then((rutaPdf) =>
+          {
+            
+         
+            cambiarRegistroBd(id, rutaImg, rutaPdf, body).then((respuesta) =>
+            {
 
-                respuesta["res"].json({
+              respuesta["res"].json({
 
-                    status:200,
-                    data: respuesta["data"],
-                    mensaje:"La categoria fue editada con éxito"
+                status: 200,
+                data: respuesta["data"],
+                mensaje: "El plan fue editado con exito"
 
-                })
+              })
 
-            }).catch( respuesta => {
+            }).catch(respuesta =>
+            {
 
-                respuesta["res"].json({
+              respuesta["res"].json({
 
-                    status:400,
-                    err: respuesta["err"],
-                    mensaje:"Error al editar la categoria"
+                status: 400,
+                err: respuesta["err"],
+                mensaje: "Error al editar el plan"
 
-                })
+              })
 
 
-            })
+            });
+          }).catch((respuesta) =>
+          {
+            respuesta["res"].json({
+              status: 400,
+              mensaje: respuesta["mensaje"]
+            });
+          })
 
         }).catch(respuesta => {
 
