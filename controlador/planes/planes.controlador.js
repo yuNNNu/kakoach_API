@@ -364,16 +364,16 @@ let updateData = (req, res) =>  {
                 
                 if (archivoPdf.mimetype != "application/pdf")
                 {
-                    return res.json({
-                        status: 400,
-                        mensaje: "El archivo debe ser formato pdf",
-                    });
-                    let respuesta = {
-                        res: res,
-                        mensaje: "El archivo debe ser formato pds"
+                  return res.json({
+                      status: 400,
+                      mensaje: "El archivo debe ser formato pdf",
+                  });
+                  let respuesta = {
+                      res: res,
+                      mensaje: "El archivo debe ser formato pds"
 
-                    }
-                    reject(respuesta);
+                  }
+                  reject(respuesta);
                 }
                 //Validamos el tamaño del pdf
                 if (archivoPdf.size >= 3000000)

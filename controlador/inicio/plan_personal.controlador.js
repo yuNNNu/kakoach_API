@@ -266,15 +266,16 @@ let updatePersonalPlan = (req, res) => {
                 }
                 reject(respuesta);
             }
+            let arrPros = (body.pros).split(',')
          
-        let datosplan = {
-          imagen: rutaImg,
-          nombre: body.nombre,
-          descripcion: body.descripcion,
-          precio: body.precio,
-          pros: body.pros,
-          pdf: rutaPdf,
-        };
+          let datosplan = {
+            imagen: rutaImg,
+            nombre: body.nombre,
+            descripcion: body.descripcion,
+            precio: body.precio,
+            pros: arrPros,
+            pdf: rutaPdf,
+          };
         //Actualizamos en MongoDB
         //https://mongoosejs.com/docs/api.html#model_Model.findByIdAndUpdate
         plan.findByIdAndUpdate(
