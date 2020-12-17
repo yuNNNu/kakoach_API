@@ -9,17 +9,17 @@ let persosnalPlanSchema = new Schema({
         type: String,
         required: [true, "La imagen es obligatoria"]
     },
-    titulo: {
+    nombre: {
         type: String,
-        required: [true, "El titulo es obligatorio"]
+        required: [true, "El nombre es obligatorio"]
     },
     descripcion: {
 		type: String,
 		required:[true, "La descripción es obligatoria"]
     },
-    valor: {
+    precio: {
         type: Number,
-        required: [true, "El valor es obligatorio"]
+        required: [true, "El precio es obligatorio"]
     },
     pros: {
         type: Array,

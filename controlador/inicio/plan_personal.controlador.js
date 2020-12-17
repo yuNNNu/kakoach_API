@@ -150,7 +150,7 @@ let updatePersonalPlan = (req, res) => {
                     `./archivos/inicio/imgplanprincipal/${rutaImg}`
                   ); //Que borre
                 }
-                //Damos valor a nueva imagen
+                //Damos precio a nueva imagen
                 rutaImg = `${nombreImg}.${extensionImg}`;
                 resolve(rutaImg);
               }
@@ -253,15 +253,15 @@ let updatePersonalPlan = (req, res) => {
         return new Promise((resolve, reject) =>
         {
             
-            if (!Number(body.valor))
+            if (!Number(body.precio))
             {
                return res.json({
                             status: 400,
-                            mensaje: "Error, el valor debe ser numerico"
+                            mensaje: "Error, el precio debe ser numerico"
                 });
                 let respuesta = {
                     res: res,
-                    mensaje: "Error, el valor debe ser numerico"
+                    mensaje: "Error, el precio debe ser numerico"
 
                 }
                 reject(respuesta);
@@ -269,9 +269,9 @@ let updatePersonalPlan = (req, res) => {
          
         let datosplan = {
           imagen: rutaImg,
-          titulo: body.titulo,
+          nombre: body.nombre,
           descripcion: body.descripcion,
-          valor: body.valor,
+          precio: body.precio,
           pros: body.pros,
           pdf: rutaPdf,
         };
@@ -438,9 +438,9 @@ let createData = (req, res) => {
         let datosPlan = new plan({
         
             imagen:`${nombre}.${extension}`,
-            titulo:body.titulo,
+            nombre:body.nombre,
             descripcion:body.descripcion,
-            valor: body.valor,
+            precio: body.precio,
             pros: body.pros,
             pdf: `${nombrePdf}.${extensionPdf}`
 
