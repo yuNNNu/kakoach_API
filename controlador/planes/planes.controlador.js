@@ -140,7 +140,7 @@ let newPlan = (req, res) =>
         }
 
         //Obtenemos los datos del formulario para pasarlos al modelo
-
+        let arrPros = (body.pros).split(',')
         let plan = new planes({
           imagen: `${nombreImg}.${extensionImg}`,
           type: body.type,
@@ -148,7 +148,7 @@ let newPlan = (req, res) =>
           descripcion: body.descripcion,
           precio: body.precio,
           nivel: body.nivel,
-          pros: body.pros,
+          pros: arrPros,
           pdf: `${nombrePdf}.${extensionPdf}`
         });
 
@@ -448,13 +448,14 @@ let updateData = (req, res) =>  {
                 }
                 reject(respuesta);
             }
+               let arrPros = (body.pros).split(',')
               let datos = {
                 type: body.type,
                 nivel: body.nivel,
                 nombre: body.nombre,
                 descripcion: body.descripcion,
                 precio: body.precio,
-                pros: body.pros,
+                pros: arrPros,
                 imagen: rutaImg,
                 pdf: rutaPdf
               };
