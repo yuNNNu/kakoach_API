@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 
 let categoriaSchema = new Schema({
-    titulo: {
+    nombre: {
         type: String,
         required: [false]
     },

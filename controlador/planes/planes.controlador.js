@@ -210,6 +210,12 @@ let deletePlan = (req, res) => {
 		if(fs.existsSync(`./archivos/planes/img-plan/${data.imagen}`)){
 
 			fs.unlinkSync(`./archivos/planes/img-plan/${data.imagen}`);
+    }
+    // borrar antigua imagen
+
+		if(fs.existsSync(`./archivos/planes/pdfs/${data.pdf}`)){
+
+			fs.unlinkSync(`./archivos/planes/pdfs/${data.pdf}`);
 		}
 
 		// borrar dato en mongo db
