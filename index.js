@@ -69,6 +69,11 @@ app.use(require('./ruta/sobremi/tarjetas.ruta'));
 app.use(require('./ruta/usuarios/clientes.ruta'));
 app.use(require('./ruta/usuarios/administradores.ruta'));
 
+/*=============================================
+=               RUTAS DE WEBPAY              =
+=============================================*/
+
+app.use(require('./ruta/webpay/webpay.ruta'));
 
 
 /*=============================================
@@ -92,3 +97,4 @@ mongoose.connect('mongodb://localhost:27017/fit_project', {
 app.listen(process.env.PORT, ()=> {
 	console.log(`Puerto ${process.env.PORT} habilitado`);
 })
+
