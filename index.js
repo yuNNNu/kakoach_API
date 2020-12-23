@@ -2,7 +2,11 @@
 =         INSTANCIAS DE REQUERIMIENTOS        =
 =============================================*/
 require('./config');
+const axios = require('axios');
 
+const endpoint= 'https://webpay3gint.transbank.cl/'
+const path = "rswebpaytransaction/api/webpay/v1.0/transactions";
+let url = endpoint + path;
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -70,11 +74,11 @@ app.use(require('./ruta/usuarios/clientes.ruta'));
 app.use(require('./ruta/usuarios/administradores.ruta'));
 
 /*=============================================
+
 =               RUTAS DE WEBPAY              =
 =============================================*/
 
 app.use(require('./ruta/webpay/webpay.ruta'));
-
 
 /*=============================================
 =            CONEXIÓN A BASE DE DATOS         =
@@ -97,4 +101,5 @@ mongoose.connect('mongodb://localhost:27017/fit_project', {
 app.listen(process.env.PORT, ()=> {
 	console.log(`Puerto ${process.env.PORT} habilitado`);
 })
+
 

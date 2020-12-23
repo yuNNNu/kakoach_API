@@ -1,8 +1,12 @@
+
 const endpoint= 'https://webpay3gint.transbank.cl/'
 const path = "rswebpaytransaction/api/webpay/v1.0/transactions";
 let url = endpoint + path;
 const axios = require('axios');
  
+
+// CODIGO NICO
+
 const headers = {
     'Tbk-Api-Key-Id' : '597055555532',
     'Tbk-Api-Key-Secret' : '579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A36B1C',
@@ -25,7 +29,6 @@ let pagar = (req, res) =>
     {   key = data.data.token;
         res.status(200).send({
            url: data.data.url + '?token_ws=' + data.data.token
-
         })
         console.log("desde controller",data.data);
     }).catch(err =>
