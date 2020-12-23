@@ -3,7 +3,7 @@ const endpoint= 'https://webpay3gint.transbank.cl/'
 const path = "rswebpaytransaction/api/webpay/v1.0/transactions";
 let url = endpoint + path;
 const axios = require('axios');
- 
+const Webpay = require('./modelo/webpay.modelo')
 
 // CODIGO NICO
 
@@ -40,12 +40,37 @@ let pagar = (req, res) =>
 let commit = (req, res) => {
 
     // let token = req.body.token_ws;
-
+    let pago = new Webpay({
+        key: key
+    });
     axios.put(url + "/" + key, null, {
         headers: headers
-    }).then(response => {
-        console.log(response.data);
+    }).then(response =>
+    {
         res.send('<script>window.close();</script>')
+        pago.save((err, data) =>
+        {
+            if (err) {
+            return ({
+                status: 400,
+                mensaje: "Error al almacenar el token webpay",
+                err,
+            });
+            }
+
+       
+        })
+        axios.get(url + "/" + key, {
+            headers:headers
+        }).then(response =>
+        {
+            console.log("get commit", response)
+        }).catch(err =>
+        {
+             console.log(err);
+        })
+        console.log(response.data);
+      
     }).catch(err => {
         console.log(err);
     })

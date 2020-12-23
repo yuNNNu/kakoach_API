@@ -1,23 +1,15 @@
 
+
+const mongoose = require('mongoose');
+
+let Schema = mongoose.Schema;
 let webpay = new Schema({
-    buy_order: {
+    key: {
         type: String,
-        required: [true, "El titulo es obligatorio"]
-    },
-    session_id: {
-		type: String,
-		required:[true, "La descripción es obligatoria"]
-    },
-    amount: {
-        type: Number,
-        required: [true, "El titulo es obligatorio"]
-    },
-    return_url: {
-		type: String,
-		required:[true, "La descripción es obligatoria"]
-	}
+        required: [true, "Key es obligatorio"]
+    }
 })
 /*=============================================
 EXPORTAMOS EL MODELO
 =============================================*/
-module.exports = webpay;
+module.exports = mongoose.model("webpays", webpay);
