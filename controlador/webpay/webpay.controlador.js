@@ -47,7 +47,8 @@ let commit = (req, res) => {
     axios.put(url + "/" + key, null, {
         headers: headers
     }).then(response =>
-    {
+    {    
+        
         SocketSingleton.io.emit('paid', JSON.stringify(response.data.data));
         res.send('<script>window.close();</script>')
         pago.save((err, data) =>
