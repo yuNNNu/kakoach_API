@@ -48,8 +48,8 @@ let commit = (req, res) => {
         headers: headers
     }).then(response =>
     {    
-        
-        SocketSingleton.io.emit('paid', JSON.stringify(response.data.data));
+
+        SocketSingleton.io.emit('paid', JSON.stringify(response.data));
         res.send('<script>window.close();</script>')
         pago.save((err, data) =>
         {
@@ -63,7 +63,7 @@ let commit = (req, res) => {
 
        
         })
-        console.log(response.data);
+        
       
     }).catch(err => {
         console.log(err);
