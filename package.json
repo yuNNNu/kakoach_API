@@ -14,7 +14,8 @@
     "mongoose": "^5.10.14",
     "nodemon": "^2.0.6",
     "request": "^2.88.2",
-    "rxjs": "^6.6.3"
+    "rxjs": "^6.6.3",
+    "socket.io": "^3.0.4"
   },
   "devDependencies": {},
   "scripts": {

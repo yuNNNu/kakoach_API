@@ -5,7 +5,8 @@ let url = endpoint + path;
 const axios = require('axios');
 const Webpay = require('./modelo/webpay.modelo')
 
-// CODIGO NICO
+// Comunicacion en real-time entre servidor y browser
+var SocketSingleton = require('../webpay/singleton/socket-singletion');
 
 const headers = {
     'Tbk-Api-Key-Id' : '597055555532',
@@ -47,6 +48,7 @@ let commit = (req, res) => {
         headers: headers
     }).then(response =>
     {
+        SocketSingleton.io.emit('paid', JSON.stringify(response.data.data));
         res.send('<script>window.close();</script>')
         pago.save((err, data) =>
         {
@@ -59,15 +61,6 @@ let commit = (req, res) => {
             }
 
        
-        })
-        axios.get(url + "/" + key, {
-            headers:headers
-        }).then(response =>
-        {
-            console.log("get commit", response)
-        }).catch(err =>
-        {
-             console.log(err);
         })
         console.log(response.data);
       

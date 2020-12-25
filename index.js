@@ -3,11 +3,11 @@
 =============================================*/
 require('./config');
 const axios = require('axios');
-
 const endpoint= 'https://webpay3gint.transbank.cl/'
 const path = "rswebpaytransaction/api/webpay/v1.0/transactions";
 let url = endpoint + path;
 const express = require('express');
+const app = express();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const fileUpload = require('express-fileupload');
@@ -16,7 +16,22 @@ const cors = require('cors')
 =VARIABLE PARA LAS FUNCIONALIDADES DE EXPRESS =
 =============================================*/
 
-const app = express();
+//SOCKET
+var SocketSingleton = require('./controlador/webpay/singleton/socket-singletion');
+var http = require('http');
+var server = http.createServer(app);
+SocketSingleton.configure(server); // <--here
+server.listen('3000');
+
+/////////
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+  	res.header('Access-Control-Allow-Credentials', 'true');
+	res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
+	res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+	res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
+	next();
+});
 
 /*=============================================
 =        MIDDLEWARES PARA BODY-PARSER         =
