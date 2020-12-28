@@ -565,13 +565,35 @@ let mostrarImg = (req, res) => {
 
 	})
 }
+
+/*=============================================
+=      PETICION  GET (MOSTRAR PDF)              =
+=============================================*/
+let mostrarPdf = (req, res) => {
+	let pdf = req.params.pdf;
+	let rutaImagen = `./archivos/planes/pdfs/${pdf}`;
+
+	fs.exists(rutaImagen, exists => {
+		if(!exists){
+			return res.json({
+				status: 400,
+				mensaje: "El pdf no existe"
+			})
+		}
+
+    res.sendFile(path.resolve(rutaImagen));
+    // res.download(path.resolve(rutaImagen));
+
+	})
+}
 /*========================
 EXPORTAMOS FUNCIONES DEL CONTROLADOR
 ========================== */
 module.exports = {
-    showPlanes,
-    newPlan,
-    deletePlan,
+  showPlanes,
+  newPlan,
+  deletePlan,
 	updateData,
-	mostrarImg
+  mostrarImg,
+  mostrarPdf
 }
