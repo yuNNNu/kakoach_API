@@ -1,7 +1,19 @@
 // IMPORTAMOS EL MODELO
 const Clientes = require('../../modelo/usuarios/clientes.modelo');
+const Auth = require('./../mailing/auth.mail')
 //  Requerimos el móduo para encriptar contraseñas
 const bcrypt = require('bcrypt');
+var nodemailer = require("nodemailer")
+// base mail
+var transporter = nodemailer.createTransport({
+host: 'smtp.gmail.com',
+port: 465,
+secure: true,
+auth: {
+	user: 'lucianoma63@gmail.com',
+	pass: 'leqkigxahlawknxl'
+}
+})
 /*=============================================
 =                     GET                     =
 =============================================*/
@@ -45,7 +57,11 @@ let crearData = (req, res) => {
 	let body = req.body;
 
 
+	// BASE DE MAIL
+	let mail = req.body.mail;
+
 	//Obtenemos los datos del formulario para pasarlos al modelo
+
 
 	let cliente = new Clientes({
 	
@@ -74,6 +90,32 @@ let crearData = (req, res) => {
 			status:200,
 			data,
 			mensaje:"El usuario ha sido creado con éxito"
+
+		})
+
+
+		var mailOptions = {
+			from: "Ka Koach",
+			to: mail,
+			subject: "Cuenta creada con exito",
+			text: body.password,
+			html: "<h1>Bienvenido a Ka Koach</h1> " + "pass: " + body.password
+
+		}
+	    transporter.verify().then(() =>
+    	{
+        console.log('Listo para enviar  el correo')
+		})
+	    transporter.sendMail(mailOptions, (err, info) =>
+		{
+			if (err)
+			{
+				res.status(500).send(err.message);
+			} else
+			{
+				console.log("Email enviado correctamente");
+			
+			}
 
 		})
 
