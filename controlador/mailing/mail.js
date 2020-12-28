@@ -2,6 +2,9 @@ var nodemailer = require("nodemailer")
 
 let sendEmail = (req, res) =>
 {
+    body = req.body;
+    pdf = body.pdf;
+    emailUser = body.emailUser;
     console.log("Email enviado")
     var transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
@@ -15,10 +18,17 @@ let sendEmail = (req, res) =>
     // AQUI DEBEMOS ENVIAR EL CORREO AL MAIL REGISTRADO POR EL USUARIO, desde el req.body
     var mailOptions = {
         from: "Ka Koach",
-        to: "lucianoma63@gmail.com",
-        subject: "Enviado desde nodemailer",
+        to: emailUser,
+        subject: "COMPRA EXITOSA",
         text: "Bienvenidos a Ka Koach",
-        html: "<h1>HOLA</h1>"
+        html: '<p>Compra realizada con exito</p> <h1> Que lo disfrute</h1><p>Gracias por su compra</p> ',
+            
+        attachments: [
+              {   // binary buffer as an attachment
+            filename: pdf,
+            path: 'http://localhost:4000/show-pdf-plan/'+pdf
+        }
+        ]
 
     }
     transporter.verify().then(() =>
