@@ -94,7 +94,11 @@ app.use(require('./ruta/usuarios/administradores.ruta'));
 =============================================*/
 
 app.use(require('./ruta/webpay/webpay.ruta'));
+/*=============================================
 
+=               RUTAS DE MAIL              =
+=============================================*/
+app.use(require('./ruta/mailing/mailing.ruta'));
 /*=============================================
 =            CONEXIÓN A BASE DE DATOS         =
 =============================================*/
