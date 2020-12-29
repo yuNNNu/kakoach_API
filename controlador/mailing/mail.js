@@ -54,7 +54,7 @@ let sendEmail = (req, res) =>
 
     })
 }
-// MAIL DE COMPRA CON PDF
+// MAIL DE CONTACTO
 let ContactMeMail = (req, res) =>
 {
     email = process.env.MAIL;
@@ -96,7 +96,7 @@ let ContactMeMail = (req, res) =>
         } else
         {
             console.log("Email enviado correctamente");
-            res.status(200).jsonp(req.body);
+            res.status(200).jsonp({req: req.body, status:200});
         }
 
     })
