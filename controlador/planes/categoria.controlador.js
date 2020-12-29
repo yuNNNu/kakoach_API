@@ -60,12 +60,11 @@ let showData = (req, res)=>{
 	}) 
 
 }
-
-// update
-let updateData = (req, res) =>  {
 /*=============================================
 FUNCIÓN PUT
 =============================================*/
+let updateData = (req, res) =>  {
+
     // caputaramos id de beneficio
     let id = req.params.id;
     // obtenemos el cuerpo del formulario

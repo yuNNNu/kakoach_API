@@ -1,5 +1,7 @@
 const express = require('express');
 const app = express();
+// importamos midellware
+const {verificarToken} = require('../../middlewares/autenticacion')
 /*=============================================
 =          SE IMPORTA EL CONTROLADOR          =
 =============================================*/
@@ -11,8 +13,8 @@ const SocialMedia = require('../../controlador/socialmedia/socialmedia.controlad
 =============================================*/
 
 app.get('/get-socialmedia', SocialMedia.mostrarData);
-app.put('/update-socialmedia/:id', SocialMedia.editarData);
-app.post('/crear-socialmedia', SocialMedia.crearData);
+app.put('/update-socialmedia/:id',verificarToken, SocialMedia.editarData);
+app.post('/crear-socialmedia',verificarToken, SocialMedia.crearData);
 
 /*=============================================
 =          SE EXPORTA LA RUTA                 =
