@@ -13,6 +13,7 @@ const Clientes = require('../../controlador/usuarios/clientes.controlador');
 app.get('/mostrar-clientes', Clientes.mostrarData);
 app.post('/crear-cliente', Clientes.crearData);
 app.post('/login-usuario', Clientes.loginCliente);
+app.delete('/eliminar-usuario/:id', Clientes.deleteCliente);
 
 /*=============================================
 =          SE EXPORTA LA RUTA                 =

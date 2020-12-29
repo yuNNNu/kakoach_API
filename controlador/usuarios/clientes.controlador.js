@@ -164,6 +164,64 @@ let loginCliente = (req, res) => {
         })
     })
 }
+/*=============================================
+PETICION  DELETE PLANS
+=============================================*/
+let deleteCliente = (req, res) => {
+
+	// Se captura id de la tarjeta a eliminar
+
+	let id = req.params.id;
+
+	Clientes.findById(id, (err, data) => {
+
+		if(err){
+
+			return res.json({
+
+				status: 500,
+				mensaje: "Error en el servidor",
+				err
+			})
+		}
+
+		if(!data){
+
+			return res.json({
+				status: 400,
+				mensaje: "No existe el usuario en la BD",
+				err
+
+			})
+		}
+
+
+		// borrar dato en mongo db
+
+		Clientes.findByIdAndRemove(id, (err, data) => {
+
+			if(err){
+
+				return res.json({
+
+					status: 500,
+					mensaje: "Error al eliminar al usuario",
+					err
+
+				})
+			}
+
+			res.json({
+
+				status: 200,
+				mensaje: "El usuario fue eliminado correctamente"
+			})
+
+		})
+
+
+	})
+}
 
 /*========================
 EXPORTAMOS FUNCIONES DEL CONTROLADOR
@@ -171,5 +229,6 @@ EXPORTAMOS FUNCIONES DEL CONTROLADOR
 module.exports = {
     mostrarData,
 	crearData,
-	loginCliente
+	loginCliente,
+	deleteCliente
 }
