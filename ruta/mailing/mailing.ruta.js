@@ -9,6 +9,7 @@ CREAMOS LAS RUTAS HTTP
 =============================================*/
 
 app.post('/send-mail', mail.sendEmail);
+app.post('/contactme-mail', mail.ContactMeMail);
 /*========================
 EXPORTAMOS RUTA
 ========================== */

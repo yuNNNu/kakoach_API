@@ -1,17 +1,19 @@
 // IMPORTAMOS EL MODELO
 const Clientes = require('../../modelo/usuarios/clientes.modelo');
-const Auth = require('./../mailing/auth.mail')
+ require('../../config')
 //  Requerimos el móduo para encriptar contraseñas
 const bcrypt = require('bcrypt');
 var nodemailer = require("nodemailer")
+mailNodeMailer = process.env.MAIL;
+passMail = process.env.PASS;
 // base mail
 var transporter = nodemailer.createTransport({
 host: 'smtp.gmail.com',
 port: 465,
 secure: true,
 auth: {
-	user: 'lucianoma63@gmail.com',
-	pass: 'leqkigxahlawknxl'
+	user: mailNodeMailer,
+	pass: passMail
 }
 })
 /*=============================================

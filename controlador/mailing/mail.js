@@ -1,23 +1,27 @@
 var nodemailer = require("nodemailer")
-
+require('../../config')
+// MAIL DE COMPRA CON PDF
 let sendEmail = (req, res) =>
 {
-    body = req.body;
-    pdf = body.pdf;
-    emailUser = body.emailUser;
-    console.log("Email enviado")
+    email = process.env.MAIL;
+    pass = process.env.PASS;
     var transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 465,
         secure: true,
         auth: {
-            user: 'lucianoma63@gmail.com',
-            pass: 'leqkigxahlawknxl'
+            user: email,
+            pass: pass
         }
     })
+
+    body = req.body;
+    pdf = body.pdf;
+    emailUser = body.emailUser;
+    console.log(" Enviado email")
     // AQUI DEBEMOS ENVIAR EL CORREO AL MAIL REGISTRADO POR EL USUARIO, desde el req.body
     var mailOptions = {
-        from: "Ka Koach",
+        from: "KA KOACH",
         to: emailUser,
         subject: "COMPRA EXITOSA",
         text: "Bienvenidos a Ka Koach",
@@ -26,14 +30,62 @@ let sendEmail = (req, res) =>
         attachments: [
               {   // binary buffer as an attachment
             filename: pdf,
-            path: 'http://localhost:4000/show-pdf-plan/'+pdf
-        }
+            path: process.env.RUTAAPI+"show-pdf-plan/"+  pdf       
+         }
+            
         ]
 
     }
     transporter.verify().then(() =>
     {
-        console.log('Listo para enviar  el correo')
+        console.log('Listo para enviar  el correo de  venta')
+    })
+
+    transporter.sendMail(mailOptions, (err, info) =>
+    {
+        if (err)
+        {
+            res.status(500).send(err.message);
+        } else
+        {
+            console.log("Email enviado correctamente");
+            res.status(200).jsonp(req.body);
+        }
+
+    })
+}
+// MAIL DE COMPRA CON PDF
+let ContactMeMail = (req, res) =>
+{
+    email = process.env.MAIL;
+    pass = process.env.PASS;
+    var transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,
+        auth: {
+            user: email,
+            pass: pass
+        }
+    })
+
+    body = req.body;
+    message = body.message;
+    emailUser = body.emailUser;
+    nombreCliente = body.nombre;
+    apellidoCliente = body.apellido;
+    console.log(" iniciando proceso de envio de  email de contactame")
+    // AQUI DEBEMOS ENVIAR EL CORREO AL MAIL REGISTRADO POR EL USUARIO, desde el req.body
+    var mailOptions = {
+        from: "KA KOACH",
+        to: email,
+        subject: "CONTACTA ESTE CORREO",
+        text: `Nombre cliente: ${ nombreCliente } ${ apellidoCliente }\nResponder a: ${ emailUser }\nMensaje: ${ message } `
+
+    }
+    transporter.verify().then(() =>
+    {
+        console.log('Listo para enviar  el correo de  contactame')
     })
 
     transporter.sendMail(mailOptions, (err, info) =>
@@ -53,5 +105,6 @@ let sendEmail = (req, res) =>
 EXPORTAMOS FUNCIONES DEL CONTROLADOR
 ========================== */
 module.exports = {
-    sendEmail
+    sendEmail,
+    ContactMeMail
 }
