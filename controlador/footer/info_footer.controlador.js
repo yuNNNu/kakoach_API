@@ -223,6 +223,7 @@ PETICION DELETE
 =============================================*/
 let borrarData = (req, res) =>
 {
+    let id = req.params.id;
     //Borramos registro en mongoDB
     //https://mongoosejs.com/docs/api.html#model_Model.findByIdAndRemove
     footer.findByIdAndRemove(id, (err, data) =>
@@ -251,5 +252,6 @@ EXPORTAMOS FUNCIONES DEL CONTROLADOR
 module.exports = {
     showData,
     updateData,
-    createData
+    createData,
+    borrarData
 }

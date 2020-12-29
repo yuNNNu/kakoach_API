@@ -11,6 +11,7 @@ CREAMOS LAS RUTAS HTTP
 app.get('/show-footer', Footer.showData);
 app.put('/edit-footer/:id', Footer.updateData);
 app.post('/create-footer', Footer.createData);
+app.delete('/borrar-footer/:id', Footer.borrarData)
 /*========================
 EXPORTAMOS RUTA
 ========================== */

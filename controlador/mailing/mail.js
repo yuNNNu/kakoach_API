@@ -80,7 +80,7 @@ let ContactMeMail = (req, res) =>
         from: "KA KOACH",
         to: email,
         subject: "CONTACTA ESTE CORREO",
-        text: `Nombre cliente: ${ nombreCliente } ${ apellidoCliente }\nResponder a: ${ emailUser }\nMensaje: ${ message } `
+        text: `Nombre cliente:\n${ nombreCliente } ${ apellidoCliente }\nResponder a: ${ emailUser }\nMensaje:\n${ message } `
 
     }
     transporter.verify().then(() =>
