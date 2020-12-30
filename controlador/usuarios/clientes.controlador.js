@@ -60,7 +60,18 @@ let crearData = (req, res) => {
 
 
 	// BASE DE MAIL
+	
 	let mail = req.body.mail;
+	var expReg = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
+	var esValido = expReg.test(mail);
+	if (!esValido)
+	{
+		return res.json({
+			status:400,
+			mensaje: "Error, formato de correo invalido",
+			
+		})
+	}
 
 	//Obtenemos los datos del formulario para pasarlos al modelo
 

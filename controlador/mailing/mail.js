@@ -18,6 +18,7 @@ let sendEmail = (req, res) =>
     body = req.body;
     pdf = body.pdf;
     emailUser = body.emailUser;
+    
     console.log(" Enviado email")
     // AQUI DEBEMOS ENVIAR EL CORREO AL MAIL REGISTRADO POR EL USUARIO, desde el req.body
     var mailOptions = {
@@ -72,6 +73,16 @@ let ContactMeMail = (req, res) =>
     body = req.body;
     message = body.message;
     emailUser = body.emailUser;
+    var expReg = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
+	var esValido = expReg.test(emailUser);
+	if (!esValido)
+	{
+		return res.json({
+			status:400,
+			mensaje: "Error, formato de correo invalido",
+			
+		})
+	}
     nombreCliente = body.nombre;
     apellidoCliente = body.apellido;
     console.log(" iniciando proceso de envio de  email de contactame")
@@ -92,7 +103,11 @@ let ContactMeMail = (req, res) =>
     {
         if (err)
         {
-            res.status(500).send(err.message);
+            return res.json({
+			status:400,
+			mensaje: "Error, formato de correo invalido",
+			err
+		    })
         } else
         {
             console.log("Email enviado correctamente");
