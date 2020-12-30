@@ -131,7 +131,9 @@ let updateSecondaryPlan = (req, res) =>
                
     }   )
 }
-
+/*=============================================
+FUNCIÓN POST
+=============================================*/
 let createData = (req, res) => {
     
     let body = req.body;
