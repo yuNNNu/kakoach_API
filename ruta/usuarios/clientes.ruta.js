@@ -17,6 +17,7 @@ app.post('/crear-cliente', Clientes.crearData);
 app.post('/login-usuario', Clientes.loginCliente);
 app.put('/editar-cliente/:id', Clientes.updateCliente);
 app.delete('/eliminar-usuario/:id',verificarToken, Clientes.deleteCliente);
+app.get('/account/active/:activetoken', Clientes.activateAccount);
 
 
 /*=============================================

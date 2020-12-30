@@ -9,7 +9,7 @@ let userSchema = new Schema({
 		required: [true, "El nombre es obligatorio"]
 	},
 	apellido: {
-		type: String, 
+		type: String,  
 		required: [true, "El apellido es obligatorio"]
 	},
 	mail:{
@@ -19,6 +19,18 @@ let userSchema = new Schema({
 	password:{
 		type: String,
 		required: [true, "La password es obligatoria"]
+	},
+	verified: {
+		type: Boolean,
+		required: [true, "Verified es obligatorio"]
+	},
+	token: {
+		type: String,  
+		required: false
+	},
+	tokenExpires:{
+		type: String,
+		required: false
 	}
 
 })

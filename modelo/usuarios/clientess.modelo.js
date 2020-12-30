@@ -3,26 +3,35 @@ const mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 
 let userSchema = new Schema({
-
 	nombre: {
 		type: String,
 		required: [true, "El nombre es obligatorio"]
 	},
 	apellido: {
-		type: String, 
+		type: String,
 		required: [true, "El apellido es obligatorio"]
 	},
-	mail:{
+	mail: {
 		type: String,
 		required: [true, "El mail es obligatorio"]
 	},
-	password:{
+	password: {
 		type: String,
 		required: [true, "La password es obligatoria"]
+	},
+	verified: {
+		type: Boolean,
+		required: false
+	},
+	token: {
+		type: String,
+		required: false
+	},
+	tokenExpires: {
+		type: String,
+		required: false
 	}
-
 })
-
 
 // evitar devolver password
 userSchema.methods.toJSON = function() 
@@ -32,5 +41,6 @@ userSchema.methods.toJSON = function()
 	delete userObject.password;
 	return userObject;
 }
+
 
 module.exports = mongoose.model("clientes", userSchema);

@@ -1,8 +1,9 @@
 // IMPORTAMOS EL MODELO
-const Clientes = require('../../modelo/usuarios/clientes.modelo');
+const Clientes = require('../../modelo/usuarios/clientess.modelo');
  require('../../config')
 //  Requerimos el móduo para encriptar contraseñas
 const bcrypt = require('bcrypt');
+const crypto = require ('crypto'); 
 var nodemailer = require("nodemailer")
 mailNodeMailer = process.env.MAIL;
 passMail = process.env.PASS;
@@ -64,29 +65,26 @@ let crearData = (req, res) => {
 	let mail = req.body.mail;
 	var expReg = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
 	var esValido = expReg.test(mail);
-	if (!esValido)
-	{
-		return res.json({
-			status:400,
-			mensaje: "Error, formato de correo invalido",
-			
-		})
-	}
-
+	 var date = Date.parse("") || 0;
 	//Obtenemos los datos del formulario para pasarlos al modelo
 
 
-	let cliente = new Clientes({
+	let clientes = new Clientes({
 	
 		nombre: body.nombre,
 		apellido: body.apellido,
 		mail: body.mail,
+		verified: false,
+		token: "",
+		tokenExpires: date,
 		password: bcrypt.hashSync(body.password,10)
 	})
 
+
 	//Guardamos en MongoDB
 
-	cliente.save((err, data)=>{
+	clientes.save((err, data)=>{
+		console.log("data", data);
 
 		if(err){
 
@@ -107,34 +105,180 @@ let crearData = (req, res) => {
 		})
 
 
-		var mailOptions = {
+
+
+	    let id = data._id.toString();
+	    let token = bcrypt.hashSync(id, 10);
+	    let expiresIn = Date.now () + 24 * 3600 * 1000; 
+
+	    let registrarToken = (id, token, expiresIn, data) => {
+	    	return new Promise((resolve, reject) => {
+	    		let datos = {
+	    			nombre: data.nombre,
+	    			apellido: data.apellido,
+	    			mail: data.mail,
+	    			password: data.password,
+	    			verified: data.verified,
+	    			token: token,
+	    			tokenExpires: expiresIn
+	    		}
+
+	    		Clientes.findByIdAndUpdate(id, datos, {new: true, runValidators: true}, (err, data) => {
+	    			console.log("data para update", data);
+	    			if(err){
+	    				let respuesta = {
+	    					res: res,
+	    					err: err
+	    				}
+
+	    				reject(respuesta);
+	    			}
+
+	    			let respuesta = {
+	    				res: res,
+	    				data: data
+	    			}
+
+	    			resolve(respuesta)
+	    		})
+	    	})
+
+	    }
+
+	    /*=============================================
+	    =                   PROMESA            =
+	    =============================================*/
+	    
+		registrarToken(id, token, expiresIn, data).then(respuesta => {
+
+			// RUTA DEL METODO activateAccount()
+			var link = 'http://localhost:4000/account/active/' + token;
+
+			var mailOptions = {
 			from: "Ka Koach",
-			to: mail,
-			subject: "Cuenta creada con exito",
+			to: data.mail,
+			subject: "Para utilizar su cuenta, porfavor confirmar con el siguiente link",
 			text: body.password,
-			html: "<h1>Bienvenido a Ka Koach</h1> " + "pass: " + body.password
+			html: "<h1>Bienvenido a Ka Koach</h1> " + "Para validar su cuenta, haga click aquí: " + link
 
-		}
-	    transporter.verify().then(() =>
-    	{
-        console.log('Listo para enviar  el correo')
-		})
-	    transporter.sendMail(mailOptions, (err, info) =>
-		{
-			if (err)
-			{
-				res.status(500).send(err.message);
-			} else
-			{
-				console.log("Email enviado correctamente");
-			
 			}
+		    transporter.verify().then(() =>
+	    	{
+	        console.log('Listo para enviar  el correo')
+			})
+		    transporter.sendMail(mailOptions, (err, info) =>
+			{
+				if (err)
+				{
+					res.status(500).send(err.message);
+				} else
+				{
+					console.log("Email enviado correctamente");
+				
+				}
 
+			})
+
+		}).catch(respuesta => {
+			respuesta["res"].json({
+				status: 400,
+				mensaje: respuesta["mensaje"]
+			})
 		})
 
 	})
 
+
+
 }
+
+let activateAccount = (req, res) => {
+
+	// activeToken == _id encriptado
+
+	let activeToken = req.params.activetoken;
+
+	Clientes.findOne({
+		token: activeToken
+	}, (err, data) => {
+		if(err){
+			return res.json({
+				status: 500,
+				mensaje: "Error en el servidor",
+				err
+			})
+		}
+
+		if(!data){
+			return res.json({
+				status: 500,
+				mensaje: "El usuario no existe en la base de datos",
+				err
+			})
+		}
+
+		let id = data._id
+
+	 	let cambiarRegistrosBd = (data, id) => {
+	 		return new Promise((resolve, reject) => {
+	 			let datos = {
+    			nombre: data.nombre,
+    			apellido: data.apellido,
+    			mail: data.mail,
+    			password: data.password,
+    			verified: true,
+    			token: data.token,
+    			tokenExpires: data.expiresIn
+    			}
+
+	            Clientes.findByIdAndUpdate(id, datos, {new:true, runValidators:true},
+	            (err, data) => {
+	            	if(err){
+						let respuesta = {
+							res: res,
+							err: err
+						}
+
+						reject(respuesta);
+						}
+
+						let respuesta = {
+							res: res,
+							data: data
+						}
+
+						resolve(respuesta)
+
+
+						res.json({
+						status: 200,
+						mensaje: "El usuario fue validado correctamente"
+					})
+	            })
+		}) 
+
+	 	}
+
+	 	cambiarRegistrosBd(data,id).then((respuesta) => {
+	 		respuesta["res"].json({
+	    		status: 200,
+	            data: respuesta["data"],
+	            mensaje: "El usuario fue validado con éxito"
+	    	})
+	 	}).catch((respuesta) => {
+	 		respuesta["res"].json({
+
+                status: 400,
+                err: respuesta["err"],
+                mensaje: "Error al validar el usuario"
+
+            })
+	 	})
+		
+	})
+}
+
+
 /*========================
 FUNCION LOGIN
 ========================== */
@@ -276,8 +420,7 @@ let updateCliente = (req, res) => {
 					nombre: data.nombre,
 					apellido: data.apellido,
 					mail: data.mail,
-					password: password
-					// password: bcrypt.hashSync(body.password,10)
+					password: bcrypt.hashSync(body.password,10)
 				}	
 
 				Clientes.findByIdAndUpdate(
@@ -348,5 +491,6 @@ module.exports = {
 	crearData,
 	loginCliente,
 	deleteCliente,
-	updateCliente
+	updateCliente,
+	activateAccount
 }
