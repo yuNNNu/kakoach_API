@@ -14,6 +14,7 @@ app.get('/mostrar-clientes', Clientes.mostrarData);
 app.post('/crear-cliente', Clientes.crearData);
 app.post('/login-usuario', Clientes.loginCliente);
 app.delete('/eliminar-usuario/:id', Clientes.deleteCliente);
+app.put('/editar-cliente/:id', Clientes.updateCliente);
 
 /*=============================================
 =          SE EXPORTA LA RUTA                 =

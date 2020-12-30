@@ -124,7 +124,7 @@ FUNCIÓN PUT
                                 let respuesta = {
 
                                     res: res,
-                                    error: error
+                                    error: err
                                 }
                                 reject(respuesta);
                             }

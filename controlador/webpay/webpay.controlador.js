@@ -51,18 +51,18 @@ let commit = (req, res) => {
 
         SocketSingleton.io.emit('paid', JSON.stringify(response.data));
         res.send('<script>window.close();</script>')
-        pago.save((err, data) =>
-        {
-            if (err) {
-            return ({
-                status: 400,
-                mensaje: "Error al almacenar el token webpay",
-                err,
-            });
-            }
+        // pago.save((err, data) =>
+        // {
+        //     if (err) {
+        //     return ({
+        //         status: 400,
+        //         mensaje: "Error al almacenar el token webpay",
+        //         err,
+        //     });
+        //     }
 
        
-        })
+        // })
         
       
     }).catch(err => {

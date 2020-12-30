@@ -223,6 +223,112 @@ let deleteCliente = (req, res) => {
 	})
 }
 
+let updateCliente = (req, res) => {
+
+	let id = req.params.id;
+	let body = req.body;
+
+	Clientes.findById(id, (err, data) => {
+		if(err){
+			return res.json({
+				status: 500,
+				mensaje: "Error en el servidor",
+				err
+			})
+		}
+
+		if(!data){
+			return res.json({
+				status: 400,
+				mensaje: "No existe usuario en la BD",
+				err
+			})
+		}
+
+		let password = data.password;
+
+		let validaPassword = (body, password) => {
+			return new Promise((resolve, reject) => {
+				if(body.password == undefined){
+					resolve(password)
+				}else{
+					password = bcrypt.hashSync(body.password,10)
+					resolve(password)
+				}
+			})
+		}
+
+		let cambiarRegistrosBd = (id, password, data) => {
+			return new Promise((resolve, reject) => {
+
+				let datos = {
+					nombre: data.nombre,
+					apellido: data.apellido,
+					mail: data.mail,
+					password: password
+					// password: bcrypt.hashSync(body.password,10)
+				}	
+
+				Clientes.findByIdAndUpdate(
+				id,
+				datos,
+				{ new:true, runValidators: true},
+				(err, data) => {
+
+					if(err){
+						let respuesta = {
+							res: res,
+							err: err
+						}
+
+						reject(respuesta);
+					}
+
+					let respuesta = {
+						res: res,
+						data: data
+					}
+
+					resolve(respuesta)
+				});
+
+
+			})
+
+		}
+
+		/*=============================================
+                SINCRONIZAMOS LA PROMESAS
+        =============================================*/
+
+        validaPassword(body, password).then((password) => {
+        	cambiarRegistrosBd(id, password, data).then((respuesta) => {
+		    	respuesta["res"].json({
+		    		status: 200,
+		            data: respuesta["data"],
+		            mensaje: "El usuario fue editado con éxito"
+		    	})
+	        }).catch(respuesta => {
+	        	respuesta["res"].json({
+
+	                status: 400,
+	                err: respuesta["err"],
+	                mensaje: "Error al editar el usuario"
+
+	              })
+	        })
+        }).catch((respuesta) => {
+        	respuesta["res"].json({
+        		status: 400,
+        		mensaje: respuesta["mensaje"]
+        	})
+        })
+
+       
+
+	})
+}
+
 /*========================
 EXPORTAMOS FUNCIONES DEL CONTROLADOR
 ========================== */
@@ -230,5 +336,6 @@ module.exports = {
     mostrarData,
 	crearData,
 	loginCliente,
-	deleteCliente
+	deleteCliente,
+	updateCliente
 }
