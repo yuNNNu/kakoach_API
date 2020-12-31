@@ -81,117 +81,146 @@ let crearData = (req, res) => {
 	})
 
 
-	//Guardamos en MongoDB
+	Clientes.find({"mail":body.mail})
+		.then(result =>
+		{
+			
+		
+			if (result.length == 0)
+			{
+				//Guardamos en MongoDB
+				clientes.save((err, data)=>{
+					
 
-	clientes.save((err, data)=>{
-		console.log("data", data);
+					if(err){
 
-		if(err){
+						return res.json({
+							status:400,
+							mensaje: "Error al almacenar al usuario",
+							err
+						})
 
+					}
+
+					res.json({
+
+						status:200,
+						data,
+						mensaje:"El usuario ha sido creado con éxito"
+
+					})
+
+
+
+
+					let id = data._id.toString();
+					let token = bcrypt.hashSync(id, 10);
+					let expiresIn = Date.now () + 24 * 3600 * 1000; 
+
+					let registrarToken = (id, token, expiresIn, data) => {
+						return new Promise((resolve, reject) => {
+							let datos = {
+								nombre: data.nombre,
+								apellido: data.apellido,
+								mail: data.mail,
+								password: data.password,
+								verified: data.verified,
+								token: token,
+								tokenExpires: expiresIn
+							}
+
+							Clientes.findByIdAndUpdate(id, datos, {new: true, runValidators: true}, (err, data) => {
+							
+								if(err){
+									let respuesta = {
+										res: res,
+										err: err
+									}
+
+									reject(respuesta);
+								}
+
+								let respuesta = {
+									res: res,
+									data: data
+								}
+
+								resolve(respuesta)
+							})
+						})
+
+					}
+
+					/*=============================================
+					=                   PROMESA            =
+					=============================================*/
+					
+					registrarToken(id, token, expiresIn, data).then(respuesta => {
+
+						// RUTA DEL METODO activateAccount()
+						var link = 'http://localhost:4000/account/active/' + token;
+
+						var mailOptions = {
+						from: "Ka Koach",
+						to: data.mail,
+						subject: "Para utilizar su cuenta, porfavor confirmar con el siguiente link",
+						text: body.password,
+						html: "<h1>Bienvenido a Ka Koach</h1> " + "Para validar su cuenta, haga click aquí: " + link
+
+						}
+						transporter.verify().then(() =>
+						{
+							console.log('Listo para enviar  el correo')
+						})
+						transporter.sendMail(mailOptions, (err, info) =>
+						{
+							if (err)
+							{
+								res.status(500).send(err.message);
+							} else
+							{
+								return res.json({
+									status:200,
+									mensaje: "Correo enviado correctamente"
+								})
+							
+							}
+
+						})
+
+					}).catch(respuesta => {
+						respuesta["res"].json({
+							status: 400,
+							mensaje: respuesta["mensaje"]
+						})
+					})
+
+				})
+				
+			} else
+			{
+
+				console.log("Error, el correo ya se encuentra registrado")
+				return
+			}
+
+
+		}).catch(err =>
+		{
 			return res.json({
 				status:400,
 				mensaje: "Error al almacenar al usuario",
 				err
 			})
-
-		}
-
-		res.json({
-
-			status:200,
-			data,
-			mensaje:"El usuario ha sido creado con éxito"
-
 		})
 
-
-
-
-	    let id = data._id.toString();
-	    let token = bcrypt.hashSync(id, 10);
-	    let expiresIn = Date.now () + 24 * 3600 * 1000; 
-
-	    let registrarToken = (id, token, expiresIn, data) => {
-	    	return new Promise((resolve, reject) => {
-	    		let datos = {
-	    			nombre: data.nombre,
-	    			apellido: data.apellido,
-	    			mail: data.mail,
-	    			password: data.password,
-	    			verified: data.verified,
-	    			token: token,
-	    			tokenExpires: expiresIn
-	    		}
-
-	    		Clientes.findByIdAndUpdate(id, datos, {new: true, runValidators: true}, (err, data) => {
-	    			console.log("data para update", data);
-	    			if(err){
-	    				let respuesta = {
-	    					res: res,
-	    					err: err
-	    				}
-
-	    				reject(respuesta);
-	    			}
-
-	    			let respuesta = {
-	    				res: res,
-	    				data: data
-	    			}
-
-	    			resolve(respuesta)
-	    		})
-	    	})
-
-	    }
-
-	    /*=============================================
-	    =                   PROMESA            =
-	    =============================================*/
-	    
-		registrarToken(id, token, expiresIn, data).then(respuesta => {
-
-			// RUTA DEL METODO activateAccount()
-			var link = 'http://localhost:4000/account/active/' + token;
-
-			var mailOptions = {
-			from: "Ka Koach",
-			to: data.mail,
-			subject: "Para utilizar su cuenta, porfavor confirmar con el siguiente link",
-			text: body.password,
-			html: "<h1>Bienvenido a Ka Koach</h1> " + "Para validar su cuenta, haga click aquí: " + link
-
-			}
-		    transporter.verify().then(() =>
-	    	{
-	        console.log('Listo para enviar  el correo')
-			})
-		    transporter.sendMail(mailOptions, (err, info) =>
-			{
-				if (err)
-				{
-					res.status(500).send(err.message);
-				} else
-				{
-					console.log("Email enviado correctamente");
-				
-				}
-
-			})
-
-		}).catch(respuesta => {
-			respuesta["res"].json({
-				status: 400,
-				mensaje: respuesta["mensaje"]
-			})
-		})
-
-	})
 
 
 
 }
-
+/*=============================================
+=                    Activar cuenta          =
+=============================================*/
 let activateAccount = (req, res) => {
 
 	// activeToken == _id encriptado
@@ -277,8 +306,6 @@ let activateAccount = (req, res) => {
 		
 	})
 }
-
-
 /*========================
 FUNCION LOGIN
 ========================== */
@@ -377,7 +404,9 @@ let deleteCliente = (req, res) => {
 
 	})
 }
-
+/*=============================================
+=                    UPDATE USER             =
+=============================================*/
 let updateCliente = (req, res) => {
 
 	let id = req.params.id;
