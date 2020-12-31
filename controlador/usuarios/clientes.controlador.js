@@ -86,9 +86,17 @@ let crearData = (req, res) => {
 		{
 			
 		
-			if (result.length == 0)
+			if (result.length  !== 0)
 			{
-				//Guardamos en MongoDB
+				return res.json({
+				status:400,
+				mensaje: "Error el mail ya se encuentra registrado",
+				err
+				})
+				
+			} 
+
+							//Guardamos en MongoDB
 				clientes.save((err, data)=>{
 					
 
@@ -196,22 +204,15 @@ let crearData = (req, res) => {
 					})
 
 				})
-				
-			} else
-			{
-
-				console.log("Error, el correo ya se encuentra registrado")
-				return
-			}
 
 
 		}).catch(err =>
 		{
-			return res.json({
+				return res.json({
 				status:400,
-				mensaje: "Error al almacenar al usuario",
+				mensaje: "Email ya registrado!",
 				err
-			})
+				})
 		})
 
 
