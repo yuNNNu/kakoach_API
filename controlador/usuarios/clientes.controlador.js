@@ -234,13 +234,14 @@ let activateAccount = (req, res) => {
 	            Clientes.findByIdAndUpdate(id, datos, {new:true, runValidators:true},
 	            (err, data) => {
 	            	if(err){
+	            		
 						let respuesta = {
 							res: res,
 							err: err
 						}
 
 						reject(respuesta);
-						}
+					}
 
 						let respuesta = {
 							res: res,
@@ -253,13 +254,12 @@ let activateAccount = (req, res) => {
 						res.json({
 						status: 200,
 						mensaje: "El usuario fue validado correctamente"
-					})
+						})
 	            })
-		}) 
+			}) 
+		}
 
-	 	}
-
-	 	cambiarRegistrosBd(data,id).then((respuesta) => {
+	 	cambiarRegistrosBd(data, id).then((respuesta) => {
 	 		respuesta["res"].json({
 	    		status: 200,
 	            data: respuesta["data"],
