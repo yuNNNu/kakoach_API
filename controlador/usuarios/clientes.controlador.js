@@ -219,61 +219,34 @@ let activateAccount = (req, res) => {
 
 		let id = data._id
 
-	 	let cambiarRegistrosBd = (data, id) => {
-	 		return new Promise((resolve, reject) => {
-	 			let datos = {
-    			nombre: data.nombre,
-    			apellido: data.apellido,
-    			mail: data.mail,
-    			password: data.password,
-    			verified: true,
-    			token: data.token,
-    			tokenExpires: data.expiresIn
-    			}
 
-	            Clientes.findByIdAndUpdate(id, datos, {new:true, runValidators:true},
-	            (err, data) => {
-	            	if(err){
-	            		
-						let respuesta = {
-							res: res,
-							err: err
-						}
-
-						reject(respuesta);
-					}
-
-						let respuesta = {
-							res: res,
-							data: data
-						}
-
-						resolve(respuesta)
-
-
-						res.json({
-						status: 200,
-						mensaje: "El usuario fue validado correctamente"
-						})
-	            })
-			}) 
+		let datos = {
+		nombre: data.nombre,
+		apellido: data.apellido,
+		mail: data.mail,
+		password: data.password,
+		verified: true,
+		token: data.token,
+		tokenExpires: data.expiresIn
 		}
 
-	 	cambiarRegistrosBd(data, id).then((respuesta) => {
-	 		respuesta["res"].json({
-	    		status: 200,
-	            data: respuesta["data"],
-	            mensaje: "El usuario fue validado con éxito"
-	    	})
-	 	}).catch((respuesta) => {
-	 		respuesta["res"].json({
+        Clientes.findByIdAndUpdate(id, datos, {new:true, runValidators:true},
+        (err, data) => {
+        	if(err){
 
-                status: 400,
-                err: respuesta["err"],
-                mensaje: "Error al validar el usuario"
+        		return res.json({
+        			status: 500,
+        			mensaje: "Error en la petición"
+        		})
+			}
 
-            })
-	 	})
+
+				res.json({
+				status: 200,
+				data: data,
+				mensaje: "El usuario fue validado correctamente"
+				})
+        })
 		
 	})
 }
