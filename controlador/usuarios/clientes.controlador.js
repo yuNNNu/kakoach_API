@@ -114,7 +114,7 @@ let crearData = (req, res) => {
 
 						status:200,
 						data,
-						mensaje:"El usuario ha sido creado con éxito"
+						mensaje:"El usuario ha sido creado con éxito, verifique y confirme su cuenta en el correo"
 
 					})
 
