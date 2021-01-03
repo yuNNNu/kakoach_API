@@ -1,6 +1,9 @@
 // IMPORTAMOS EL MODELO
 const SocialMedia = require('../../modelo/socialmedia/socialmedia.modelo');
-
+// LIBRARIES
+const fs = require('fs');
+const path = require('path');
+const fileUpload = require('express-fileupload');
 /*=============================================
 =                     GET                     =
 =============================================*/
@@ -46,37 +49,93 @@ let crearData = (req, res) => {
 	// SE OBTIENE CUERPO DEL FORMULARIO
 	let body = req.body;
 
-	//Obtenemos los datos del formulario para pasarlos al modelo
-	let urlRuta = body.url;
-	let socialmedia = new SocialMedia({
-	
-		url: urlRuta
+	 if(!req.files){
+        return res.json({
+            status: 500,
+            mensaje: "La imagen no puede ir vacía"
+        })
+    }
 
-	})
+    let imagen = req.files.imagen;
 
-	//Guardamos en MongoDB
+    // SE VALIDAN LAS EXTENSIONES DE LA IMAGEN
 
-	socialmedia.save((err, data)=>{
+    if(imagen.mimetype != 'image/jpeg' && imagen.mimetype != 'image/png' 
+        && imagen.mimetype != 'image/JPEG' && imagen.mimetype != 'image/PNG'){
 
-		if(err){
+        return res.json({
 
-			return res.json({
-				status:400,
-				mensaje: "Error al almacenar la url",
-				err
-			})
+            status:400,
+            mensaje: "la imagen debe ser formato JPG o PNG"
+            
+        })
+    }
 
-		}
+    //Validamos el tamaño del imagen
 
-		res.json({
+    if(imagen.size > 2000000){
 
-			status:200,
-			data,
-			mensaje:"La url ha sido creada con éxito"
+        return res.json({
+
+            status:400,
+            mensaje: "la imagen debe tener un peso inferior a 2MB" 
+            
+        })
+    }
+
+     //Cambiar nombre al archivo
+
+    let nombre = Math.floor(Math.random()*10000);
+
+    //Capturar la extensión del archivo
+
+
+      imagen.mv(`./archivos/socialmedia/${imagen.name}`, err => {
+
+        if(err){
+            return res.json({
+                status: 500,
+                mensaje: "Error al guardar la imagen",
+                err
+            })
+        }
+
+
+        //Obtenemos los datos del formulario para pasarlos al modelo
+
+       	let socialmedia = new SocialMedia({
+
+			nombre: body.nombre,
+			imagen: `${imagen.name}`,
+			url: body.url
 
 		})
 
-	})
+        //Guardamos en MongoDB
+
+        socialmedia.save((err, data)=>{
+
+            if(err){
+
+                return res.json({
+                    status:400,
+                    mensaje: "Error al almacenar el logo del módulo",
+                    err
+                })
+
+            }
+
+            res.json({
+
+                status:200,
+                data,
+                mensaje:"El módulo ha sido creado con éxito"
+
+            })
+
+        })
+
+    })
 
 }
 
@@ -188,9 +247,28 @@ let editarData = (req, res) => {
 	})
 }
 
+let mostrarLogo = (req, res) => {
+
+    let imagen = req.params.imagen;
+    let rutaImg = `./archivos/socialmedia/${imagen}`;
+
+    fs.exists(rutaImg, exists => {
+        if(!exists){
+            return res.json({
+                status: 400,
+                mensaje: "La imagen no existe"
+            })
+        }
+
+        res.sendFile(path.resolve(rutaImg));
+    })
+
+}
+
 	
 module.exports = {
     mostrarData,
     editarData,
-    crearData
+    crearData,
+    mostrarLogo
 }

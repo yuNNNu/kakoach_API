@@ -10,6 +10,7 @@ CREAMOS LAS RUTAS HTTP
 
 app.post('/send-mail', mail.sendEmail);
 app.post('/contactme-mail', mail.ContactMeMail);
+app.post('/recover-pass/:id', mail.recuperarPass);
 /*========================
 EXPORTAMOS RUTA
 ========================== */

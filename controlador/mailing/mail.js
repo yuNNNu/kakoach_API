@@ -116,10 +116,63 @@ let ContactMeMail = (req, res) =>
 
     })
 }
+
+let recuperarPass = (req, res) => {
+
+    email = process.env.MAIL;
+    pass = process.env.PASS;
+    var transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,
+        auth: {
+            user: email,
+            pass: pass
+        }
+    })
+
+    body = req.body;
+    token = req.params.token;
+    emailUser = body.emailUser;
+    
+    console.log(" Enviado email")
+    // AQUI DEBEMOS ENVIAR EL CORREO AL MAIL REGISTRADO POR EL USUARIO, desde el req.body
+    var mailOptions = {
+        from: "KA KOACH",
+        to: emailUser,
+        subject: "CAMBIO DE CONTRASEÑA",
+        text: "Bienvenidos a Ka Koach",
+        html: '<a>`${process.env.RUTAAPI}/editar-cliente/${token}`</a> <h1> Que lo disfrute</h1><p>Gracias por su compra</p> ',
+            
+    }
+    transporter.verify().then(() =>
+    {
+        console.log('Listo para enviar  el correo de  venta')
+    })
+
+    transporter.sendMail(mailOptions, (err, info) =>
+    {
+        if (err)
+        {
+            res.status(500).send(err.message);
+        } else
+        {
+            console.log("Email enviado correctamente");
+            res.status(200).jsonp(req.body);
+        }
+
+    })
+
+
+
+}
+
+
 /*========================
 EXPORTAMOS FUNCIONES DEL CONTROLADOR
 ========================== */
 module.exports = {
     sendEmail,
-    ContactMeMail
+    ContactMeMail,
+    recuperarPass
 }

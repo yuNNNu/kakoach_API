@@ -15,6 +15,7 @@ const SocialMedia = require('../../controlador/socialmedia/socialmedia.controlad
 app.get('/get-socialmedia', SocialMedia.mostrarData);
 app.put('/update-socialmedia/:id',verificarToken, SocialMedia.editarData);
 app.post('/crear-socialmedia',verificarToken, SocialMedia.crearData);
+app.get('/mostrar-socialmedia-logo/:imagen', SocialMedia.mostrarLogo);
 
 /*=============================================
 =          SE EXPORTA LA RUTA                 =
