@@ -12,7 +12,6 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const fileUpload = require('express-fileupload');
 const cors = require('cors');
-const fetch = require('node-fetch');
 /*=============================================
 =VARIABLE PARA LAS FUNCIONALIDADES DE EXPRESS =
 =============================================*/
