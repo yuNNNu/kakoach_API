@@ -265,10 +265,40 @@ let mostrarLogo = (req, res) => {
 
 }
 
+let getSocialMediaUrl = (req, res) => {
+
+    let red = req.params.nombre;
+
+    SocialMedia.findOne({
+        nombre : red
+    }, (err, data) =>{
+        if (err) {
+            return res.json({
+                status: 500,
+                mensaje: "Error en el servidor",
+                err
+            })
+        }
+        //Validamos que el Usuario exista
+        if (!data) {
+            return res.json({
+                status: 400,
+                mensaje: "La red no existe en la Base de datos",
+                err
+            })
+        }
+
+        res.json({
+            url: data.url
+        })
+    })
+}
+
 	
 module.exports = {
     mostrarData,
     editarData,
     crearData,
-    mostrarLogo
+    mostrarLogo,
+    getSocialMediaUrl
 }

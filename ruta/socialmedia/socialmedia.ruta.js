@@ -17,6 +17,8 @@ app.put('/update-socialmedia/:id',verificarToken, SocialMedia.editarData);
 app.post('/crear-socialmedia',verificarToken, SocialMedia.crearData);
 app.get('/mostrar-socialmedia-logo/:imagen', SocialMedia.mostrarLogo);
 
+app.get('/get-socialmedia-route/:nombre', SocialMedia.getSocialMediaUrl);
+
 /*=============================================
 =          SE EXPORTA LA RUTA                 =
 =============================================*/
