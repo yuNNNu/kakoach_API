@@ -586,6 +586,7 @@ let mostrarPdf = (req, res) => {
 
 	})
 }
+
 /*========================
 EXPORTAMOS FUNCIONES DEL CONTROLADOR
 ========================== */

@@ -3,8 +3,10 @@ const endpoint= 'https://webpay3gint.transbank.cl/'
 const path = "rswebpaytransaction/api/webpay/v1.0/transactions";
 let url = endpoint + path;
 const axios = require('axios');
+// modelo de webpay
 const Webpay = require('./modelo/webpay.modelo')
-
+// modelo de la venta
+const Venta = require('../../modelo/webpay/registroVenta/venta.modelo')
 // Comunicacion en real-time entre servidor y browser
 var SocketSingleton = require('../webpay/singleton/socket-singletion');
 
@@ -29,7 +31,8 @@ let pagar = (req, res) =>
     }).then(data =>
     {   key = data.data.token;
         res.status(200).send({
-           url: data.data.url + '?token_ws=' + data.data.token
+            url: data.data.url + '?token_ws=' + data.data.token,
+            token:data.data.token
         })
         console.log("desde controller",data.data);
     }).catch(err =>
@@ -71,8 +74,44 @@ let commit = (req, res) => {
 
 
 }
+/*=============================================
+=      PETICION POST REGISTRAR COMPRA           =
+=============================================*/
+let RegistrarCompras = (req, res) => {
+	let body = req.body;
+    let venta = new Venta({
+        email: body.mail,
+        nombre_plan: body.nombre_plan,
+        id_plan: body.id,
+        precio:body.precio,
+        nro_venta: body.nro_venta,
+        fecha_venta: body.fecha_venta,
+        session_id: body.session_id,
+        token: body.token
+    })
+
+         //Guardamos en MongoDB
+
+    venta.save((err, data) => {
+        if (err) {
+        return res.json({
+            status: 400,
+            mensaje: "Error al registrar la venta",
+            err,
+        });
+        }
+
+        res.json({
+        status: 200,
+        data,
+        mensaje: "La venta fue creada con éxito",
+        });
+    });
+
+}
 
 module.exports = {
     pagar,
-    commit
+    commit,
+    RegistrarCompras
 }
