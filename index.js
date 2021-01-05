@@ -100,6 +100,11 @@ app.use(require('./ruta/webpay/webpay.ruta'));
 =============================================*/
 app.use(require('./ruta/mailing/mailing.ruta'));
 /*=============================================
+
+=               RUTAS DE ESTADISTICAS         =
+=============================================*/
+app.use(require('./ruta/estadisticas/estadisticas.rutas'));
+/*=============================================
 =            CONEXIÓN A BASE DE DATOS         =
 =============================================*/
 mongoose.connect('mongodb://localhost:27017/fit_project', {
