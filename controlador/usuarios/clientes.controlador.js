@@ -269,14 +269,14 @@ let crearData = (req, res) => {
 						                    <tr>
 						                      <td align='center' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
 						                        <div style="color:#000000;font-family:'Droid Sans', 'Helvetica Neue', Arial, sans-serif;font-size:36px;line-height:1;text-align:center;">
-						                          Bienvenido!
+						                          Bienvenid@!
 						                        </div>
 						                      </td>
 						                    </tr>
 						                    <tr>
 						                      <td align='center' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
 						                        <div style="color:#000000;font-family:'Droid Sans', 'Helvetica Neue', Arial, sans-serif;font-size:16px;line-height:20px;text-align:center;">
-						                          Confirma tu dirección de correo electrónico para completar la validación de tu cuenta KaKoach. Es simple, solo haz click en el botón de abajo.
+						                          Confirma tu dirección de correo electrónico para completar la validación de tu cuenta KaKoach. Es simple, sólo haz click en el botón de abajo.
 						                        </div>
 						                      </td>
 						                    </tr>
