@@ -456,6 +456,7 @@ let activateAccount = (req, res) => {
 
 	let activeToken = req.params.activetoken;
 
+
 	Clientes.findOne({
 		token: activeToken
 	}, (err, data) => {
@@ -474,6 +475,7 @@ let activateAccount = (req, res) => {
 				err
 			})
 		}
+
 
 		let id = data._id
 

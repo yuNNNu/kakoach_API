@@ -146,6 +146,14 @@ let recuperarPass = (req, res) => {
             })
         }
 
+        if(!data){
+            return res.json({
+                status: 500,
+                mensaje: "El mail ingresado no está registrado",
+                err
+            })
+        }
+
         let token = data.token;
         console.log("token", token);
 
@@ -162,6 +170,10 @@ let recuperarPass = (req, res) => {
             transporter.verify().then(() =>
             {
                 console.log('Listo para enviar  el correo de  venta')
+                return res.json({
+                    status: 200,
+                    mail: data.mail
+                })
             })
 
             transporter.sendMail(mailOptions, (err, info) =>
@@ -175,11 +187,6 @@ let recuperarPass = (req, res) => {
                 } else
                 {
                     console.log("Email enviado correctamente");
-                    return res.json({
-                        status: 200,
-                        mail: data.mail
-                    })
-
                 }
 
             })
