@@ -1,4 +1,5 @@
 var nodemailer = require("nodemailer")
+const Clientes = require('../../modelo/usuarios/clientess.modelo');
 require('../../config')
 // MAIL DE COMPRA CON PDF
 let sendEmail = (req, res) =>
@@ -132,39 +133,60 @@ let recuperarPass = (req, res) => {
     })
 
     body = req.body;
-    token = req.params.token;
-    emailUser = body.emailUser;
-    
-    console.log(" Enviado email")
-    // AQUI DEBEMOS ENVIAR EL CORREO AL MAIL REGISTRADO POR EL USUARIO, desde el req.body
-    var mailOptions = {
-        from: "KA KOACH",
-        to: emailUser,
-        subject: "CAMBIO DE CONTRASEÑA",
-        text: "Bienvenidos a Ka Koach",
-        html: '<a>`${process.env.RUTAAPI}/editar-cliente/${token}`</a> <h1> Que lo disfrute</h1><p>Gracias por su compra</p> ',
-            
-    }
-    transporter.verify().then(() =>
-    {
-        console.log('Listo para enviar  el correo de  venta')
-    })
+    emailUser = body.mail;
 
-    transporter.sendMail(mailOptions, (err, info) =>
-    {
-        if (err)
-        {
-            res.status(500).send(err.message);
-        } else
-        {
-            console.log("Email enviado correctamente");
-            res.status(200).jsonp(req.body);
+    Clientes.findOne({
+        mail: emailUser
+    }, (err, data) => {
+        if(err){
+            return res.json({
+                status: 500,
+                mensaje: "Error en el servidor",
+                err
+            })
         }
 
+        let token = data.token;
+        console.log("token", token);
+
+            console.log(" Enviado email")
+            // AQUI DEBEMOS ENVIAR EL CORREO AL MAIL REGISTRADO POR EL USUARIO, desde el req.body
+            var mailOptions = {
+                from: "KA KOACH",
+                to: data.mail,
+                subject: "CAMBIO DE CONTRASEÑA",
+                text: "Bienvenidos a Ka Koach",
+                html: `<a href="http://localhost:4200/nueva-password/${token}">recuperar pass</a>`
+                    
+            }
+            transporter.verify().then(() =>
+            {
+                console.log('Listo para enviar  el correo de  venta')
+            })
+
+            transporter.sendMail(mailOptions, (err, info) =>
+            {
+                if (err)
+                {
+                    return res.json({
+                        status: 500,
+                        err: err.message
+                    })
+                } else
+                {
+                    console.log("Email enviado correctamente");
+                    return res.json({
+                        status: 200,
+                        mail: data.mail
+                    })
+
+                }
+
+            })
+
+
     })
-
-
-
+    
 }
 
 

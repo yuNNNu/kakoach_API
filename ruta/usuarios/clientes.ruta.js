@@ -15,8 +15,8 @@ const Clientes = require('../../controlador/usuarios/clientes.controlador');
 app.get('/mostrar-clientes',verificarToken, Clientes.mostrarData);
 app.post('/crear-cliente', Clientes.crearData);
 app.post('/login-usuario', Clientes.loginCliente);
-app.put('/editar-cliente/:id', Clientes.updateCliente);
-app.delete('/eliminar-usuario/:id',verificarToken, Clientes.deleteCliente);
+app.put('/editar-cliente/:token', Clientes.updateCliente);
+app.delete('/eliminar-usuario/:token',verificarToken, Clientes.deleteCliente);
 app.get('/account/active/:activetoken', Clientes.activateAccount);
 
 

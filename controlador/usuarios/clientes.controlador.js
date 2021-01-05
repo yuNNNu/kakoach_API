@@ -614,10 +614,12 @@ let deleteCliente = (req, res) => {
 =============================================*/
 let updateCliente = (req, res) => {
 
-	let id = req.params.id;
+	let token = req.params.token;
 	let body = req.body;
 
-	Clientes.findById(id, (err, data) => {
+	Clientes.findOne({
+		token: token	
+	}, (err, data) => {
 		if(err){
 			return res.json({
 				status: 500,
@@ -634,6 +636,7 @@ let updateCliente = (req, res) => {
 			})
 		}
 
+		let id = data._id;
 		let password = data.password;
 
 		let validaPassword = (body, password) => {
@@ -654,7 +657,11 @@ let updateCliente = (req, res) => {
 					nombre: data.nombre,
 					apellido: data.apellido,
 					mail: data.mail,
-					password: bcrypt.hashSync(body.password,10)
+					password: password,
+					token: data.token,
+					tokenExpires: data.tokenExpires,
+					verified: data.verified
+
 				}	
 
 				Clientes.findByIdAndUpdate(
@@ -693,7 +700,6 @@ let updateCliente = (req, res) => {
         	cambiarRegistrosBd(id, password, data).then((respuesta) => {
 		    	respuesta["res"].json({
 		    		status: 200,
-		            data: respuesta["data"],
 		            mensaje: "El usuario fue editado con éxito"
 		    	})
 	        }).catch(respuesta => {
@@ -712,9 +718,9 @@ let updateCliente = (req, res) => {
         	})
         })
 
-       
-
 	})
+
+	
 }
 
 /*========================
