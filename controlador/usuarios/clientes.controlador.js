@@ -485,7 +485,7 @@ let activateAccount = (req, res) => {
 		password: data.password,
 		verified: true,
 		token: data.token,
-		tokenExpires: data.expiresIn
+		tokenExpires: data.tokenExpires
 		}
 
         Clientes.findByIdAndUpdate(id, datos, {new:true, runValidators:true},
@@ -499,11 +499,10 @@ let activateAccount = (req, res) => {
 			}
 
 
-				res.json({
-				status: 200,
-				data: data,
-				mensaje: "El usuario fue validado correctamente"
-				})
+			res.json({
+			status: 200,
+			mensaje: "El usuario fue validado correctamente"
+			})
 
 				
         })
