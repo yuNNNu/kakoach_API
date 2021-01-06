@@ -6,8 +6,22 @@ require('../../config')
 let All = (req, res) =>
 {
  
+  const body = req.body;
  
-  Venta.find({}).exec((err, data) => {
+  if (!body.fecha_inicio || !body.fecha_fin )
+  {
+      return res.json({
+
+			status:400,
+			mensaje: "Requiere de fecha de inicio y fecha fin" 
+			})
+  }
+  const fechaInicio = body.fecha_inicio;
+  const fechaFin = body.fecha_fin;
+  console.log(fechaInicio)
+  Venta.find({}).exec((err, data) =>
+  {
+    
     // Si ocurre un error
     if (err) {
       return res.json({
@@ -15,6 +29,7 @@ let All = (req, res) =>
         mensaje: "Error en la petición",
       });
     }
+  
 
     // inicializacion de variable  total
     let total = 0;
@@ -22,11 +37,13 @@ let All = (req, res) =>
     let PlanesFilter = [];
     
     // Llenamos dos arreglos 1 de todos los planes y hasta repetidos y 1 arreglo de planes no repetidos
-    data.map((x) => {
+    data.map((x) =>
+    {
+  
       let fecha = Date.parse(x.fecha_venta);
       // fechas que deben ser recepcionadas con req.body
-      var dMenor = Date.parse("2021/01/01");
-      var dMayor = Date.parse("2021/01/06");
+      var dMenor = Date.parse(fechaInicio);
+      var dMayor = Date.parse(fechaFin);
 
       if (fecha >= dMenor && fecha <= dMayor) {
         total = x.precio + total;
@@ -70,7 +87,15 @@ let All = (req, res) =>
 
     const largo = planesYCantidad.length;
     const cantVentas = planesEnRango.length;
+    if (cantVentas <= 0)
+    {
+        return res.json({
 
+        status:404,
+        mensaje: "No hay registros en esas fechas" 
+        
+        })
+    }
     res.json({
       status: 200,
       cantidad_ventas: cantVentas,
