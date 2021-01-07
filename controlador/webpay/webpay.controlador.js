@@ -109,9 +109,60 @@ let RegistrarCompras = (req, res) => {
     });
 
 }
+/*=============================================
+=      PETICION GET  COMPRA           =
+=============================================*/
+/*=============================================
+FUNCIÓN GET
+=============================================*/
 
+let showVentas = (req, res)=>{
+
+	//https://mongoosejs.com/docs/api.html#model_Model.find
+
+	Venta.find({})
+        .exec((err, data) =>
+        {
+           
+
+		if(err){
+
+			return res.json({
+
+				status:500,
+				mensaje: "Error en la petición"
+
+			})
+		}
+
+		//Contar la cantidad de registros
+		Venta.countDocuments({}, (err, total)=>{
+
+			if(err){
+
+				return res.json({
+
+					status:500,
+					mensaje: "Error en la petición"
+
+				})
+			}
+
+			res.json({
+				status: 200,
+				total,
+				data
+			})
+
+		})
+
+	}) 
+
+}
 module.exports = {
     pagar,
     commit,
-    RegistrarCompras
+    RegistrarCompras,
+    showVentas
+
 }
