@@ -40,6 +40,10 @@ let planesSchema = new Schema({
 		type: String,
 		required:[true, "El archivo es obligatorio"]
 	},
+    url: {
+        type: String,
+        required:[true, "La url es obligatoria"]
+    }
 })
 /*=============================================
 EXPORTAMOS EL MODELO

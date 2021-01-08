@@ -76,6 +76,8 @@ let newPlan = (req, res) =>
 
   let imagen = req.files.imagen;
   let pdf = req.files.pdf;
+  let url = body.nombre.replace(/ /g, '-');;
+  url = url.toLowerCase();
   // SE VALIDAN LAS EXTENSIONES DE LA IMAGEN
 
   if (
@@ -149,7 +151,8 @@ let newPlan = (req, res) =>
           precio: body.precio,
           nivel: body.nivel,
           pros: arrPros,
-          pdf: `${nombrePdf}.${extensionPdf}`
+          pdf: `${nombrePdf}.${extensionPdf}`,
+          url: url
         });
 
         //Guardamos en MongoDB
