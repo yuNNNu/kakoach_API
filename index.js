@@ -105,6 +105,12 @@ app.use(require('./ruta/mailing/mailing.ruta'));
 =============================================*/
 app.use(require('./ruta/estadisticas/estadisticas.rutas'));
 /*=============================================
+
+=               RUTAS DE CAPTCHA              =
+=============================================*/
+app.use(require('./ruta/captcha/captcha.ruta'));
+
+/*=============================================
 =            CONEXIÓN A BASE DE DATOS         =
 =============================================*/
 mongoose.connect('mongodb://localhost:27017/fit_project', {
