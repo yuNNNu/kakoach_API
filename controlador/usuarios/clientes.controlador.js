@@ -129,12 +129,11 @@ let crearData = (req, res) => {
 					let text="";
 					let t= obj.forEach((x) =>
 					{
-						
-		
 						text = text + x;
 						
 					})
-					console.log("text out",  text)
+					token = text;
+					
 					
 					let expiresIn = Date.now () + 24 * 3600 * 1000; 
 
@@ -504,7 +503,7 @@ let activateAccount = (req, res) => {
 		}
 
         Clientes.findByIdAndUpdate(id, datos, {new:true, runValidators:true},
-        (err, data) => {
+        (err, datas) => {
         	if(err){
 
         		return res.json({
@@ -514,10 +513,14 @@ let activateAccount = (req, res) => {
 			}
 
 
-			res.json({
-			status: 200,
-			mensaje: "El usuario fue validado correctamente"
-			})
+			// res.json({
+			// status: 200,
+			// mensaje: "El usuario fue validado correctamente"
+			// })
+			let url = process.env.RUTAHOST + "login/" + data.token;
+			console.log("url a angular",url)
+			
+			res.redirect(url)
 
 				
         })
