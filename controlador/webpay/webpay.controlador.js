@@ -77,6 +77,7 @@ let commit = (req, res) => {
 /*=============================================
 =      PETICION POST REGISTRAR COMPRA           =
 =============================================*/
+// el nro_ventas es el buy_order en pagar()
 let RegistrarCompras = (req, res) => {
 	let body = req.body;
     let venta = new Venta({

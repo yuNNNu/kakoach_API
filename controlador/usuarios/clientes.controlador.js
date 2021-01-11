@@ -123,6 +123,8 @@ let crearData = (req, res) => {
 
 					let id = data._id.toString();
 					let token = bcrypt.hashSync(id, 10);
+					token.replace("/","a")
+					console.log("token en creaciopn cliente", token)
 					let expiresIn = Date.now () + 24 * 3600 * 1000; 
 
 					let registrarToken = (id, token, expiresIn, data) => {
@@ -448,7 +450,7 @@ let crearData = (req, res) => {
 
 }
 /*=============================================
-=                    Activar cuenta          =
+=               Activar cuenta          =
 =============================================*/
 let activateAccount = (req, res) => {
 
@@ -511,9 +513,9 @@ let activateAccount = (req, res) => {
 		
 	})
 }
-/*========================
-FUNCION LOGIN
-========================== */
+/*=======================================
+=       FUNCION LOGIN CON MAIL Y PASS     =
+========================================= */
 let loginCliente = (req, res) => {
     //Obtenemos el cuerpo del formulario
     let body = req.body;
@@ -723,6 +725,45 @@ let updateCliente = (req, res) => {
 
 	
 }
+/*=============================================
+=    FUNCION LOGIN CON MAIL Y PASS          =
+=============================================*/
+let loginToken = (req, res) =>
+{
+	let token = req.params.token;
+	console.log("token", token)
+	
+
+	Clientes.findOne({ token: token }, (err, data) =>
+	{
+		if (err) {
+		return res.json({
+			status: 500,
+			mensaje: "Error en el servidor",
+			err
+		})
+        }
+        //Validamos que el Usuario exista
+        if (!data) {
+            return res.json({
+                status: 400,
+                mensaje: "No existe usuario asociado al token",
+                err
+            })
+		}
+	
+		let cliente = ({
+			nombre: data["nombre"],
+			apellido: data["apellido"],
+			mail: data["mail"],
+			verified: data["verified"]
+		})
+		res.json({
+			status: 200,
+			cliente
+		})
+	})
+}
 
 /*========================
 EXPORTAMOS FUNCIONES DEL CONTROLADOR
@@ -733,5 +774,6 @@ module.exports = {
 	loginCliente,
 	deleteCliente,
 	updateCliente,
-	activateAccount
+	activateAccount,
+	loginToken
 }
