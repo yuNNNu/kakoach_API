@@ -123,8 +123,19 @@ let crearData = (req, res) => {
 
 					let id = data._id.toString();
 					let token = bcrypt.hashSync(id, 10);
-					token.replace("/","a")
-					console.log("token en creaciopn cliente", token)
+					
+					let obj = token.split("/")
+				
+					let text="";
+					let t= obj.forEach((x) =>
+					{
+						
+		
+						text = text + x;
+						
+					})
+					console.log("text out",  text)
+					
 					let expiresIn = Date.now () + 24 * 3600 * 1000; 
 
 					let registrarToken = (id, token, expiresIn, data) => {
