@@ -58,7 +58,7 @@ app.use(cors());
 app.use(require('./ruta/navbar/logo.ruta'));
 app.use(require('./ruta/socialmedia/socialmedia.ruta'));
 app.use(require('./ruta/footer/info_footer.ruta'));
-
+app.use(require('./ruta/terminos/terminos.ruta'));
 /*=============================================
 =               RUTAS DE INICIO               =
 =============================================*/
@@ -66,6 +66,8 @@ app.use(require('./ruta/inicio/benefits_inicio.ruta'));
 app.use(require('./ruta/inicio/plan_personal.ruta'));
 app.use(require('./ruta/inicio/principal_img_inicio.ruta'));
 app.use(require('./ruta/inicio/planes_secundarios.ruta'));
+app.use(require('./ruta/inicio/info-planes.ruta'));
+
 
 /*=============================================
 =               RUTAS DE PLANES               =
