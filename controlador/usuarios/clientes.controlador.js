@@ -4,7 +4,10 @@ const Clientes = require('../../modelo/usuarios/clientess.modelo');
 //  Requerimos el móduo para encriptar contraseñas
 const bcrypt = require('bcrypt');
 const crypto = require ('crypto'); 
+const axios = require('axios');
 var nodemailer = require("nodemailer")
+
+
 mailNodeMailer = process.env.MAIL;
 passMail = process.env.PASS;
 // base mail
@@ -17,6 +20,7 @@ auth: {
 	pass: passMail
 }
 })
+
 /*=============================================
 =                     GET                     =
 =============================================*/
@@ -47,9 +51,7 @@ let mostrarData = (req, res) => {
 
 		});
 	})
-
 }
-
 /*=============================================
 =                    POST                     =
 =============================================*/
@@ -135,7 +137,8 @@ let crearData = (req, res) => {
 					token = text;
 					
 					
-					let expiresIn = Date.now () + 24 * 3600 * 1000; 
+					let expiresIn = Date.now () + 5 * 3600 * 1000; 
+					console.log("expiresIn", expiresIn);
 
 					let registrarToken = (id, token, expiresIn, data) => {
 						return new Promise((resolve, reject) => {
@@ -427,6 +430,7 @@ let crearData = (req, res) => {
 								res.status(500).send(err.message);
 							} else
 							{
+								console.log("mail enviado")
 								return res.json({
 									status:200,
 									mensaje: "Correo enviado correctamente"
@@ -454,10 +458,6 @@ let crearData = (req, res) => {
 				err
 				})
 		})
-
-
-
-
 }
 /*=============================================
 =               Activar cuenta          =
@@ -490,42 +490,54 @@ let activateAccount = (req, res) => {
 
 
 		let id = data._id
+		/////////////
+		const seconds = 60;
+		let now = (Date.now()+seconds)/1000;
+		let expires = data.tokenExpires;
 
-
-		let datos = {
-		nombre: data.nombre,
-		apellido: data.apellido,
-		mail: data.mail,
-		password: data.password,
-		verified: true,
-		token: data.token,
-		tokenExpires: data.tokenExpires
-		}
-
-        Clientes.findByIdAndUpdate(id, datos, {new:true, runValidators:true},
-        (err, datas) => {
-        	if(err){
-
-        		return res.json({
-        			status: 500,
-        			mensaje: "Error en la petición"
-        		})
+		if(expires > now){
+			// TOKEN NO HA EXPIRADO
+			let datos = {
+			nombre: data.nombre,
+			apellido: data.apellido,
+			mail: data.mail,
+			password: data.password,
+			verified: true,
+			token: data.token,
+			tokenExpires: data.tokenExpires
 			}
 
+	        Clientes.findByIdAndUpdate(id, datos, {new:true, runValidators:true},
+	        (err, datas) => {
+	        	if(err){
 
-			// res.json({
-			// status: 200,
-			// mensaje: "El usuario fue validado correctamente"
-			// })
-			let url = process.env.RUTAHOST + "login/" + data.token;
-			console.log("url a angular",url)
-			
-			res.redirect(url)
+	        		return res.json({
+	        			status: 500,
+	        			mensaje: "Error en la petición"
+	        		})
+				}
 
+
+				// res.json({
+				// status: 200,
+				// mensaje: "El usuario fue validado correctamente"
+				// })
+				let url = process.env.RUTAHOST + "login/" + data.token;
+				console.log("url a angular",url)
 				
-        })
-		
-	})
+				res.redirect(url)
+
+					
+	        })
+		}else{
+			// TOKEN EXPIRÓ
+
+			axios.delete(process.env.RUTAAPI + "eliminar-usuario/" + id);
+			let url = process.env.RUTAHOST + "login/" + data.token;
+			res.redirect(url);
+		}
+    })
+
 }
 /*=======================================
 =       FUNCION LOGIN CON MAIL Y PASS     =
@@ -735,12 +747,10 @@ let updateCliente = (req, res) => {
         	})
         })
 
-	})
-
-	
+	})	
 }
 /*=============================================
-=    FUNCION LOGIN CON MAIL Y PASS          =
+=    FUNCION LOGIN CON TOKEN        =
 =============================================*/
 let loginToken = (req, res) =>
 {
@@ -772,10 +782,32 @@ let loginToken = (req, res) =>
 			mail: data["mail"],
 			verified: data["verified"]
 		})
-		res.json({
-			status: 200,
-			cliente
-		})
+
+		let id = data._id
+		/////////////
+		const seconds = 60;
+		let now = (Date.now()+seconds)/1000;
+		let expires = data.tokenExpires;
+
+		let test = expires - now;
+		console.log("test", test);
+
+		if(expires < now){
+			console.log("el token no ha expirado")
+			// TOKEN NO HA EXPIRADO
+			res.json({
+				status: 200,
+				cliente
+			})
+		}else{
+			console.log("el token si ha expirado")
+			// TOKEN EXPIRÓ
+			res.json({
+				status: 400,
+				err: err,
+				mensaje: "El link ha caducado"
+			})
+		}
 	})
 }
 

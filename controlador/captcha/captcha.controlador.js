@@ -12,6 +12,7 @@ let validateCaptcha = (req, res) => {
 
     if(token === null || token === undefined){
       res.status(201).send({success: false, message: "Token is empty or invalid"})
+      return;
     }
 
 
