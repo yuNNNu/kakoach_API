@@ -28,6 +28,10 @@ let persosnalPlanSchema = new Schema({
     pdf: {
         type: String,
         required: [true, "El pdf no puede ir vacio"]
+    },
+    url: {
+        type: String,
+        required:[true, "La url es obligatoria"]
     }
 })
 /*=============================================

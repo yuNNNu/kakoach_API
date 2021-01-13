@@ -457,7 +457,11 @@ let updateData = (req, res) =>  {
                 }
                 reject(respuesta);
             }
-               let arrPros = (body.pros).split(',')
+
+              let url = body.nombre.replace(/ /g, '-');;
+              url = url.toLowerCase();
+
+              let arrPros = (body.pros).split(',')
               let datos = {
                 type: body.type,
                 nivel: body.nivel,
@@ -466,7 +470,8 @@ let updateData = (req, res) =>  {
                 precio: body.precio,
                 pros: arrPros,
                 imagen: rutaImg,
-                pdf: rutaPdf
+                pdf: rutaPdf,
+                url: url
               };
               //Actualizamos en MongoDB
               //https://mongoosejs.com/docs/api.html#model_Model.findByIdAndUpdate

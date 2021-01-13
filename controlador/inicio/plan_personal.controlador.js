@@ -253,20 +253,24 @@ let updatePersonalPlan = (req, res) => {
         return new Promise((resolve, reject) =>
         {
             
-            if (!Number(body.precio))
-            {
-               return res.json({
-                            status: 400,
-                            mensaje: "Error, el precio debe ser numerico"
-                });
-                let respuesta = {
-                    res: res,
-                    mensaje: "Error, el precio debe ser numerico"
+          if (!Number(body.precio))
+          {
+             return res.json({
+                          status: 400,
+                          mensaje: "Error, el precio debe ser numerico"
+              });
+              let respuesta = {
+                  res: res,
+                  mensaje: "Error, el precio debe ser numerico"
 
-                }
-                reject(respuesta);
-            }
-            let arrPros = (body.pros).split(',')
+              }
+              reject(respuesta);
+          }
+
+          let url = body.nombre.replace(/ /g, '-');;
+          url = url.toLowerCase();
+
+          let arrPros = (body.pros).split(',')
          
           let datosplan = {
             imagen: rutaImg,
@@ -275,6 +279,7 @@ let updatePersonalPlan = (req, res) => {
             precio: body.precio,
             pros: arrPros,
             pdf: rutaPdf,
+            url: url
           };
         //Actualizamos en MongoDB
         //https://mongoosejs.com/docs/api.html#model_Model.findByIdAndUpdate
@@ -364,6 +369,8 @@ let createData = (req, res) => {
 
     let imagen = req.files.imagen;
     let pdf = req.files.pdf;
+    let url = body.nombre.replace(/ /g, '-');;
+    url = url.toLowerCase();
     // SE VALIDAN LAS EXTENSIONES DE LA IMAGEN
 
     if(imagen.mimetype != 'image/jpeg' && imagen.mimetype != 'image/png' 
@@ -424,9 +431,9 @@ let createData = (req, res) => {
             })
         }
 
-        pdf.mv(`./archivos/inicio/pdfs/${ nombrePdf }.${ extensionPdf }`, (errP) =>
+        pdf.mv(`./archivos/inicio/pdfs/${ nombrePdf }.${ extensionPdf }`, (err) =>
         { 
-        if (errP) {
+        if (err) {
           return res.json({
             status: 500,
             mensaje: "Error al guardar el archivo pdf",
@@ -443,7 +450,8 @@ let createData = (req, res) => {
             descripcion:body.descripcion,
             precio: body.precio,
             pros: body.pros,
-            pdf: `${nombrePdf}.${extensionPdf}`
+            pdf: `${nombrePdf}.${extensionPdf}`,
+            url: url
 
         })
       
