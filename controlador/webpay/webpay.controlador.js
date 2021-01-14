@@ -17,28 +17,59 @@ const headers = {
 }
 
 let key;
-
+let nuevonum=()=>{
+    const now = Date.now()
+    const nAzar = Math.round(Math.abs(Math.random() + 0.5) * 10000000000);
+    let nro = ("" + now + nAzar);
+    return nro
+}
 let pagar = (req, res) =>
 {
-    let body = req.body;
-    axios.post(url, {
-    "buy_order": body.buy_order,
-     "session_id": body.session_id,
-     "amount": body.amount,
-     "return_url": body.return_url
-    }, {
-        headers : headers
-    }).then(data =>
-    {   key = data.data.token;
-        res.status(200).send({
-            url: data.data.url + '?token_ws=' + data.data.token,
-            token:data.data.token
-        })
-    }).catch(err =>
+    let nro = nuevonum();
+    if (nro.length >= 26)
     {
-        
-        console.log(err);
-    })
+        nro = nuevonum();
+    }
+    else
+    {
+        Venta.findOne({ "nro_venta": nro }).then(result =>
+        {
+            
+            if (result != null)
+            {   
+                nro = nuevonum();
+                if (nro.length >= 26)
+                {
+                    nro = nuevonum();
+                }
+                console.log(" existe")
+            } 
+            
+            console.log("🚀 ~ file: webpay.controlador.js ~ line 46 ~ nro", nro)
+                // antes de filtrar nro
+                let body = req.body;
+                axios.post(url, {
+                "buy_order": nro,
+                "session_id": nro,
+                "amount": body.amount,
+                "return_url": body.return_url
+                }, {
+                    headers : headers
+                }).then(data =>
+                {   key = data.data.token;
+                    res.status(200).send({
+                        url: data.data.url + '?token_ws=' + data.data.token,
+                        token:data.data.token
+                    })
+                }).catch(err =>
+                {
+                    
+                    console.log(err);
+                })
+            
+        })
+    }
+
 }
 
 let commit = (req, res) => {
@@ -113,9 +144,7 @@ let RegistrarCompras = (req, res) => {
 /*=============================================
 =      PETICION GET  COMPRA           =
 =============================================*/
-/*=============================================
-FUNCIÓN GET
-=============================================*/
+
 
 let showVentas = (req, res)=>{
 
