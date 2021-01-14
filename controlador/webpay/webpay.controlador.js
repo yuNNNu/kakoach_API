@@ -9,7 +9,7 @@ const Webpay = require('./modelo/webpay.modelo')
 const Venta = require('../../modelo/webpay/registroVenta/venta.modelo')
 // Comunicacion en real-time entre servidor y browser
 var SocketSingleton = require('../webpay/singleton/socket-singletion');
-
+require('./../../config')
 const headers = {
     'Tbk-Api-Key-Id' : '597055555532',
     'Tbk-Api-Key-Secret' : '579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A36B1C',
@@ -52,7 +52,7 @@ let pagar = (req, res) =>
                 "buy_order": nro,
                 "session_id": nro,
                 "amount": body.amount,
-                "return_url": body.return_url
+                "return_url": process.env.RUTAAPI+"commit"
                 }, {
                     headers : headers
                 }).then(data =>
