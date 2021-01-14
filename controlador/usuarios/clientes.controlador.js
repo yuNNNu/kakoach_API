@@ -82,7 +82,10 @@ let crearData = (req, res) => {
 		password: bcrypt.hashSync(body.password,10)
 	})
 
-
+	
+	
+	
+	
 	Clientes.find({"mail":body.mail})
 		.then(result =>
 		{
@@ -177,7 +180,32 @@ let crearData = (req, res) => {
 				=                   PROMESA            =
 				=============================================*/
 				
-				registrarToken(id, token, expiresIn, data).then(respuesta => {
+				registrarToken(id, token, expiresIn, data).then(respuesta =>
+				{
+					// RECUPERAMOS DATOS DE SOCIALMEDIA
+					var socialMedia;
+					let instagram
+					, facebook
+					, youtube
+					, twitter
+					axios.get(process.env.RUTAAPI + "get-socialmedia",
+						{
+					headers: {
+						"Content-type": "application/json; charset=UTF-8"
+					}
+					}
+					).then((x) =>
+					{
+						
+						socialMedia = x.data.data;
+						instagram = socialMedia[0];
+						facebook = socialMedia[1]
+						youtube = socialMedia[2];
+						twitter = socialMedia[3]
+						
+						console.log("🚀 ~ file: clientes.controlador.js ~ line 205 ~ clientes.save ~ twitter", twitter)
+					})
+		
 
 					// RUTA DEL METODO activateAccount()
 					let link = process.env.RUTAAPI + 'account/active/' + token;
@@ -341,7 +369,7 @@ let crearData = (req, res) => {
 												<tr align='center'>
 												<!--
 													<td align='center'>
-													<a href='https://www.instagram.com/ka.koach/'>
+													<a href='${instagram}'>
 														<img alt='instagram' height='50px' style='background-color: #343A40;' src='${linklogoinstagram}' width='50px'>
 													</a>
 													</td>
@@ -520,7 +548,6 @@ let activateAccount = (req, res) => {
 				}
 
 				let url = process.env.RUTAHOST + "login/" + data.token;
-				console.log("url a angular",url)
 				
 				res.redirect(url)
 
@@ -752,7 +779,6 @@ let updateCliente = (req, res) => {
 let loginToken = (req, res) =>
 {
 	let token = req.params.token;
-	console.log("token", token)
 	
 
 	Clientes.findOne({ token: token }, (err, data) =>
@@ -787,7 +813,6 @@ let loginToken = (req, res) =>
 		let expires = data.tokenExpires/1000;
 
 		let test = expires - now;
-		console.log("test", test);
 
 		if(expires > now){
 			console.log("el token no ha expirado")

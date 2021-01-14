@@ -95,7 +95,7 @@ let login = (req, res) => {
         user: body.user
 	}, (err, data) =>
 	{
-			console.log(data)
+			
         if (err) {
             return res.json({
                 status: 500,

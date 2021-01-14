@@ -24,7 +24,6 @@ let sendEmail = (req, res) =>
     nombre_plan = data["nombre_plan"];
     precio = data["precio"];
     nro_venta = data["nro_venta"]
-    console.log(fecha)
    
       let linklogo = process.env.RUTAAPI + "mostrar-logo/logomessage.png";
       let linklogoinstagram =
@@ -395,7 +394,6 @@ let recuperarPass = (req, res) => {
 
             console.log(" Enviado email")
             // AQUI DEBEMOS ENVIAR EL CORREO AL MAIL REGISTRADO POR EL USUARIO, desde el req.body
-            //`<a href="http://localhost:4200/nueva-password/${token}">recuperar pass</a>`
             let link = process.env.RUTAHOST + 'nueva-password/' + token;
             let linklogo = process.env.RUTAAPI + 'mostrar-logo/logomessage.png';
             let linklogoinstagram = process.env.RUTAAPI + 'mostrar-socialmedia-logo/instagram.png';

@@ -12,7 +12,7 @@ let showPlan = (req, res) =>
     plan.find({})
         .exec((err, data) =>
         {
-            console.log(data)
+         
             if(err){
 
                 return res.json({

@@ -69,7 +69,7 @@ let updateData = (req, res) =>  {
     let id = req.params.id;
     // obtenemos el cuerpo del formulario
     let body = req.body;
-    console.log("body",body)
+   
     //01  VALIDAMOS EXISTENCIA DE BENEFICIO
     Categoria.findById(id, (err, data) =>
     {       
@@ -174,7 +174,6 @@ let updateData = (req, res) =>  {
 
         let cambiarRegistroBd = (id, body, rutaImagen, data) =>
         {
-            console.log("cambiar registro", body)
             return new Promise((resolve, reject) => {
               let datos = {
                 nombre: body.nombre,

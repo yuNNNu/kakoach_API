@@ -34,9 +34,9 @@ let pagar = (req, res) =>
             url: data.data.url + '?token_ws=' + data.data.token,
             token:data.data.token
         })
-        console.log("desde controller",data.data);
     }).catch(err =>
     {
+        
         console.log(err);
     })
 }
