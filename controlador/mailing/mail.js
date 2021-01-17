@@ -394,7 +394,7 @@ let recuperarPass = (req, res) => {
 
             console.log(" Enviado email")
             // AQUI DEBEMOS ENVIAR EL CORREO AL MAIL REGISTRADO POR EL USUARIO, desde el req.body
-            let link = process.env.RUTAHOST + 'nueva-password/' + token;
+            let link = process.env.RUTAHOST + 'nueva-contrasena/' + token;
             let linklogo = process.env.RUTAAPI + 'mostrar-logo/logomessage.png';
             let linklogoinstagram = process.env.RUTAAPI + 'mostrar-socialmedia-logo/instagram.png';
             let linklogofacebook = process.env.RUTAAPI + 'mostrar-socialmedia-logo/facebook.png';
@@ -404,7 +404,7 @@ let recuperarPass = (req, res) => {
             var mailOptions = {
                 from: "KA KOACH",
                 to: data.mail,
-                subject: "CAMBIO DE CONTRASEÑA",
+                subject: "Cambio de contraseña | Ka Koach 💪 | 🇨🇱 ",
                 text: "Bienvenidos a Ka Koach",
                 html:  `<!doctype html>
                         <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
