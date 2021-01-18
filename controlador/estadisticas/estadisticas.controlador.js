@@ -16,8 +16,13 @@ let All = (req, res) =>
 			mensaje: "Requiere de fecha de inicio y fecha fin" 
 			})
   }
-  const fechaInicio = body.fecha_inicio;
-  const fechaFin = body.fecha_fin;
+  const fechaInicio =new Date (body.fecha_inicio);
+
+  const sumandoDia = new Date(body.fecha_fin);
+  
+ let fechaFin = new Date(sumandoDia.valueOf()+86400000)
+
+    
  
   Venta.find({}).exec((err, data) =>
   {
@@ -39,13 +44,17 @@ let All = (req, res) =>
     // Llenamos dos arreglos 1 de todos los planes y hasta repetidos y 1 arreglo de planes no repetidos
     data.map((x) =>
     {
-  
+      
+      
+      
       let fecha = Date.parse(x.fecha_venta);
       // fechas que deben ser recepcionadas con req.body
       var dMenor = Date.parse(fechaInicio);
       var dMayor = Date.parse(fechaFin);
-
-      if (fecha >= dMenor && fecha <= dMayor) {
+      
+      if (fecha >= dMenor && fecha <= dMayor)
+      {
+        
         total = x.precio + total;
 
         planesEnRango.push({ id: x.id_plan,
