@@ -7,7 +7,8 @@ IMPORTAMOS EL CONTROLADOR
 =============================================*/
 const Planes = require('../../controlador/planes/planes.controlador');
 // funciones
-app.get('/show-planes', Planes.showPlanes)
+app.get('/show-planes', Planes.showPlanes);
+app.get('/show-individual-plan/:id', Planes.showPlanById);
 app.get('/show-plan/:imagen', Planes.mostrarImg);
 app.get('/show-pdf-plan/:pdf', Planes.mostrarPdf);
 app.delete('/delete-plan/:id',verificarToken, Planes.deletePlan);

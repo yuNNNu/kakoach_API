@@ -1,4 +1,4 @@
-/*=============================================
+    /*=============================================
 ESQUEMA PARA EL MODELO CONECTOR A MONGODB
 =============================================*/
 const mongoose = require('mongoose');
@@ -12,9 +12,9 @@ let footerSchema = new Schema({
         required: [true, "El titulo es obligatorio"]
     },
     descripcion: {
-        type: String,
+        type: Array,
         required: [true, "La descripcion es obligatoria"]
-	}
+    }
 })
 /*=============================================
 EXPORTAMOS EL MODELO

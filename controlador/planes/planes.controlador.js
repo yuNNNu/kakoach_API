@@ -53,6 +53,39 @@ let showPlanes = (req, res)=>{
 	}) 
 
 }
+
+let showPlanById = (req, res)=>{
+
+  let id = req.params.id;
+
+  planes.findById(id, (err, data) => {
+    if(err){
+
+      return res.json({
+
+        status: 500,
+        mensaje: "Error en el servidor",
+        err
+      })
+    }
+
+    if(!data){
+
+      return res.json({
+        status: 400,
+        mensaje: "No existe el plan en la BD",
+        err
+
+      })
+    }
+
+    return res.json({
+      status: 200,
+      data: data
+    })
+  })
+           
+}
 /*=============================================
 PETICION  POST PLANS
 =============================================*/
@@ -604,5 +637,6 @@ module.exports = {
   deletePlan,
 	updateData,
   mostrarImg,
-  mostrarPdf
+  mostrarPdf,
+  showPlanById
 }
