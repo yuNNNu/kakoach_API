@@ -177,7 +177,7 @@ let createData = (req, res) => {
     let body = req.body;
     // SE DECLARAN LAS VARIABLES
     let title = body.titulo;
-    let desc = body.descripcion;
+    let desc = JSON.parse(body.descripcion)[0];
 
     if(title == undefined){
         return res.json({
