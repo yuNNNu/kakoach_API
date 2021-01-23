@@ -175,7 +175,15 @@ let newPlan = (req, res) =>
         }
 
         //Obtenemos los datos del formulario para pasarlos al modelo
-        let arrPros = (body.pros).split(',')
+        let arrPros = [];
+        let _pros = (body.pros).split('_,')
+        let index = _pros.length-1;
+        _pros.map(x => {
+          let value = x.replace(/_/g, '');
+          arrPros.push(value);
+
+        })
+
         let plan = new planes({
           imagen: `${nombreImg}.${extensionImg}`,
           type: body.type,
