@@ -494,7 +494,15 @@ let updateData = (req, res) =>  {
               let url = body.nombre.replace(/ /g, '-');;
               url = url.toLowerCase();
 
-              let arrPros = (body.pros).split(',')
+              let arrPros = [];
+              let _pros = (body.pros).split('_,')
+              let index = _pros.length-1;
+              _pros.map(x => {
+                let value = x.replace(/_/g, '');
+                arrPros.push(value);
+
+              })
+
               let datos = {
                 type: body.type,
                 nivel: body.nivel,
