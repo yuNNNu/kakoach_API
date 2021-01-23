@@ -12,7 +12,7 @@ let footerSchema = new Schema({
         required: [true, "El titulo es obligatorio"]
     },
     descripcion: {
-        type: Array,
+        type: Object,
         required: [true, "La descripcion es obligatoria"]
     }
 })

@@ -59,6 +59,33 @@ let showData = (req, res)=>{
 
 }
 
+let showIndividualData = (req, res) => {
+    let id = req.params.id;
+
+    footer.findById(id, (err, data) => {
+        if(err) {
+            return res.json({
+                status: 500,
+                mensaje: "Error en el servidor",
+                err
+            })
+        }
+
+        if(!data){
+            return res.json({
+                status: 400,
+                mensaje: "No existe el módulo en la base de datos",
+                err
+            })
+        }
+
+        res.json({
+            status: 200,
+            data
+        })
+    })
+}
+
 /*=============================================
 PETICION PUT
 =============================================*/
@@ -175,10 +202,11 @@ let createData = (req, res) => {
 
     // SE OBTIENE CUERPO DEL FORMULARIO 
     let body = req.body;
+    console.log("body", body);
     // SE DECLARAN LAS VARIABLES
     let title = body.titulo;
-    let desc = JSON.parse(body.descripcion)[0];
-
+    let desc = body.descripciones;
+    
     if(title == undefined){
         return res.json({
             status: 400,
@@ -253,5 +281,6 @@ module.exports = {
     showData,
     updateData,
     createData,
-    borrarData
+    borrarData,
+    showIndividualData
 }
