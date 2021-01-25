@@ -38,7 +38,7 @@ let sendEmail = (req, res) =>
     var mailOptions = {
         from: "KA KOACH",
         to: emailUser,
-        subject: "COMPRA EXITOSA",
+        subject: "Compra Exitosa | Ka Koach 💪 | 🇨🇱",
         text: "Bienvenidos a Ka Koach",
       html: `<!doctype html>
                         <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
@@ -140,8 +140,8 @@ let sendEmail = (req, res) =>
                                                 <div style="color:#000000;font-family:'Droid Sans', 'Helvetica Neue', Arial, sans-serif;font-size:16px;line-height:20px;text-align:center;">
                                                   <p>Fecha compra: ${fecha}</p>
                                                   <p>Nº Venta: ${nro_venta}</p>
-                                                  <h1>Plan: ${nombre_plan}</h1>
-                                                  <h1>Precio: ${precio}</h1>
+                                                  <p>Plan: ${nombre_plan}</p>
+                                                  <p>Precio: $${precio}</p>
                                                 </div>
                                               </td>
                                             </tr>

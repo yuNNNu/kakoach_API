@@ -673,6 +673,7 @@ let loginCliente = (req, res) => {
         res.json({
 			status: 200,
 			verified: data.verified,
+			nombre: data.nombre,
             mensaje: "ok"
         })
     })
