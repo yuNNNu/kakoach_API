@@ -123,8 +123,8 @@ let editarData = (req, res) => {
 
                     let imagen = req.files.imagen;
 
-                    if(imagen.mimetype != 'image/jpeg' && imagen.mimetype != 'image/png' 
-                        && imagen.mimetype != 'image/JPEG' && imagen.mimetype != 'image/PNG'){
+                    if( imagen.mimetype != 'image/png' 
+                         && imagen.mimetype != 'image/PNG'){
 
                         let respuesta = {
                             res: res,
@@ -150,7 +150,7 @@ let editarData = (req, res) => {
 
                     //Cambiar nombre al archivo
 
-                    let nombre = Math.floor(Math.random()*10000);
+                    let nombre = "logo";
 
                     //Capturar la extensión del archivo
 
@@ -282,8 +282,8 @@ let createData = (req, res) => {
 
     // SE VALIDAN LAS EXTENSIONES DE LA IMAGEN
 
-    if(imagen.mimetype != 'image/jpeg' && imagen.mimetype != 'image/png' 
-        && imagen.mimetype != 'image/JPEG' && imagen.mimetype != 'image/PNG'){
+    if(imagen.mimetype != 'image/png' 
+        &&  imagen.mimetype != 'image/PNG'){
 
         return res.json({
 
@@ -307,7 +307,7 @@ let createData = (req, res) => {
 
     //Cambiar nombre al archivo
 
-    let nombre = Math.floor(Math.random()*10000);
+    let nombre = "logo";
 
     //Capturar la extensión del archivo
 

@@ -25,7 +25,7 @@ let sendEmail = (req, res) =>
     precio = data["precio"];
     nro_venta = data["nro_venta"]
    
-      let linklogo = process.env.RUTAAPI + "mostrar-logo/logomessage.png";
+      let linklogo = process.env.RUTAAPI + "mostrar-logo/logo.png";
       let linklogoinstagram =
         process.env.RUTAAPI + "mostrar-socialmedia-logo/instagram.png";
       let linklogofacebook =
@@ -34,6 +34,8 @@ let sendEmail = (req, res) =>
         process.env.RUTAAPI + "mostrar-socialmedia-logo/youtube.png";
       let linklogotwitter =
         process.env.RUTAAPI + "mostrar-socialmedia-logo/twitter.png";
+
+
     // AQUI DEBEMOS ENVIAR EL CORREO AL MAIL REGISTRADO POR EL USUARIO, desde el req.body
     var mailOptions = {
         from: "KA KOACH",
@@ -266,6 +268,7 @@ let sendEmail = (req, res) =>
                         </html>`,
             
         attachments: [
+          
               {   // binary buffer as an attachment
             filename: pdf,
             path: process.env.RUTAAPI+"show-pdf-plan/"+  pdf       
@@ -291,6 +294,7 @@ let sendEmail = (req, res) =>
         }
 
     })
+  
 }
 // MAIL DE CONTACTO
 let ContactMeMail = (req, res) =>
