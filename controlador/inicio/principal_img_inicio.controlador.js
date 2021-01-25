@@ -16,7 +16,7 @@ let mostrarData = (req, res) => {
 		if(err){
 			return res.json({
 				status: 500,
-				mensaje: "Error en la peticion"
+				mensaje: "Error en la petición"
 			})		
 		}
 
@@ -53,7 +53,7 @@ let crearData = (req, res) => {
 	if(!req.files){
 		return res.json({
 			status: 500,
-			mensaje: "La imagen no puede ir vacía"
+			mensaje: "Error en la petición"
 		})
 	}
 
@@ -163,7 +163,7 @@ let editarData = (req, res) => {
 		if(err){
 			return res.json({
 				status: 500,
-				mensaje: "Error en el servidor",
+				mensaje: "Error en la petición",
 				err
 			})
 		}

@@ -66,7 +66,7 @@ let showIndividualData = (req, res) => {
         if(err) {
             return res.json({
                 status: 500,
-                mensaje: "Error en el servidor",
+                mensaje: "Error en la petición",
                 err
             })
         }
@@ -103,7 +103,7 @@ let updateData = (req, res) =>  {
             if (err) {
                 return res.json({
                     status: 500,
-                    mensaje: "Error en el servidor",
+                    mensaje: "Error en la petición",
                     err
                 })
             }
@@ -260,7 +260,7 @@ let borrarData = (req, res) =>
         {
             return res.json({
                 status: 500,
-                mensaje: "Error al borrar el footer",
+                mensaje: "Error en la petición",
                 err
             })
         }

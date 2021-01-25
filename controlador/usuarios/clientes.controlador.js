@@ -34,7 +34,7 @@ let mostrarData = (req, res) => {
 		if(err){
 			return res.json({
 				status: 500,
-				mensaje: "Error en la peticion"
+				mensaje: "Error en la petición"
 			})		
 		}
 
@@ -543,10 +543,7 @@ var mailOptions = {
 
 
 				}).catch(respuesta => {
-					// respuesta["res"].json({
-					// 	status: 400,
-					// 	mensaje: respuesta["mensaje"]
-					// })
+					
 					console.log(respuesta)
 				})
 
@@ -578,14 +575,14 @@ let activateAccount = (req, res) => {
 		if(err){
 			return res.json({
 				status: 500,
-				mensaje: "Error en el servidor",
+				mensaje: "Error en la petición",
 				err
 			})
 		}
 
 		if(!data){
 			return res.json({
-				status: 500,
+				status: 400,
 				mensaje: "El usuario no existe en la base de datos",
 				err
 			})
@@ -652,7 +649,7 @@ let loginCliente = (req, res) => {
         if (err) {
             return res.json({
                 status: 500,
-                mensaje: "Error en el servidor",
+                mensaje: "Error en la petición",
                 err
             })
         }
@@ -660,7 +657,7 @@ let loginCliente = (req, res) => {
         if (!data) {
             return res.json({
                 status: 400,
-                mensaje: "El usuario no existe en la Base de datos",
+                mensaje: "El usuario no existe en la base de datos",
                 err
             })
         }
@@ -697,7 +694,7 @@ let deleteCliente = (req, res) => {
 			return res.json({
 
 				status: 500,
-				mensaje: "Error en el servidor",
+				mensaje: "Error en la petición",
 				err
 			})
 		}
@@ -722,7 +719,7 @@ let deleteCliente = (req, res) => {
 				return res.json({
 
 					status: 500,
-					mensaje: "Error al eliminar al usuario",
+					mensaje: "Error en la petición",
 					err
 
 				})
@@ -753,7 +750,7 @@ let updateCliente = (req, res) => {
 		if(err){
 			return res.json({
 				status: 500,
-				mensaje: "Error en el servidor",
+				mensaje: "Error en la petición",
 				err
 			})
 		}

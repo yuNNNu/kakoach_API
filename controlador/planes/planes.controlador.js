@@ -64,7 +64,7 @@ let showPlanById = (req, res)=>{
       return res.json({
 
         status: 500,
-        mensaje: "Error en el servidor",
+        mensaje: "Error en la petición",
         err
       })
     }
@@ -96,13 +96,13 @@ let newPlan = (req, res) =>
   // SE CONSULTA SI VIENE CONSIGO LA IMAGEN PRINCIPAL
   if (!req.files.imagen) {
     return res.json({
-      status: 500,
+      status: 400,
       mensaje: "La imagen no puede ir vacía",
     });
   }
   if (!req.files.pdf) {
     return res.json({
-      status: 500,
+      status: 400,
       mensaje: "El archivo PDF no puede ir vacio",
     });
   }
@@ -159,7 +159,7 @@ let newPlan = (req, res) =>
   imagen.mv(`./archivos/planes/img-plan/${nombreImg}.${extensionImg}`, (err) => {
     if (err) {
       return res.json({
-        status: 500,
+        status: 400,
         mensaje: "Error al guardar la imagen",
         err,
       });
@@ -168,7 +168,7 @@ let newPlan = (req, res) =>
       {
         if (errP) {
           return res.json({
-            status: 500,
+            status: 400,
             mensaje: "Error al guardar el archivo pdf",
             err,
           });
@@ -234,7 +234,7 @@ let deletePlan = (req, res) => {
 			return res.json({
 
 				status: 500,
-				mensaje: "Error en el servidor",
+				mensaje: "Error en la petición",
 				err
 			})
 		}
@@ -270,7 +270,7 @@ let deletePlan = (req, res) => {
 
 				return res.json({
 
-					status: 500,
+					status: 400,
 					mensaje: "Error al eliminar el plan",
 					err
 
@@ -304,7 +304,7 @@ let updateData = (req, res) =>  {
         if (err) {
             return res.json({
                 status: 500,
-                mensaje: "Error en el servidor",
+                mensaje: "Error en la petición",
                 err
             })
         }
@@ -369,7 +369,7 @@ let updateData = (req, res) =>  {
               (err) => {
                 if (err) {
                   return res.json({
-                    status: 500,
+                    status: 400,
                     mensaje: "Error al guardar la imagen",
                     err,
                   });
@@ -451,7 +451,7 @@ let updateData = (req, res) =>  {
                     if (errP)
                     {
                         return res.json({
-                            status: 500,
+                            status: 400,
                             mensaje: "Error al guardar el archivo pdf",
                             err,
                         });

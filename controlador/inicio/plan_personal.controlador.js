@@ -65,7 +65,7 @@ let updatePersonalPlan = (req, res) => {
     if (err) {
       return res.json({
         status: 500,
-        mensaje: "Error en el servidor",
+        mensaje: "Error en la petición",
         err,
       });
     }
@@ -132,7 +132,7 @@ let updatePersonalPlan = (req, res) => {
                 if (err) {
                   return res.json({
                     status: 500,
-                    mensaje: "Error al guardar la imagen",
+                    mensaje: "Error en la petición",
                     err,
                   });
 
@@ -214,12 +214,12 @@ let updatePersonalPlan = (req, res) => {
                     {
                         return res.json({
                             status: 500,
-                            mensaje: "Error al guardar el archivo pdf",
+                            mensaje: "Error en la petición",
                             err,
                         });
                         let respuesta = {
                             res: res,
-                            mensaje: "Error al guardar el archivo pdf"
+                            mensaje: "Error en la petición"
 
                         }
                         reject(respuesta);
@@ -364,13 +364,13 @@ let createData = (req, res) => {
 
     if(!req.files){
         return res.json({
-            status: 500,
+            status: 400,
             mensaje: "La imagen no puede ir vacía"
         })
     }
     if (!req.files.pdf) {
     return res.json({
-      status: 500,
+      status: 400,
       mensaje: "El archivo PDF no puede ir vacio",
     });
     }
@@ -433,7 +433,7 @@ let createData = (req, res) => {
 
         if(err){
             return res.json({
-                status: 500,
+                status: 400,
                 mensaje: "Error al guardar la imagen",
                 err
             })
@@ -443,7 +443,7 @@ let createData = (req, res) => {
         { 
         if (err) {
           return res.json({
-            status: 500,
+            status: 400,
             mensaje: "Error al guardar el archivo pdf",
             err,
           });

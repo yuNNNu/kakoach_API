@@ -16,7 +16,7 @@ let mostrarData = (req, res) => {
 		if(err){
 			return res.json({
 				status: 500,
-				mensaje: "Error en la peticion"
+				mensaje: "Error en la petición"
 			})		
 		}
 
@@ -99,7 +99,7 @@ let login = (req, res) => {
         if (err) {
             return res.json({
                 status: 500,
-                mensaje: "Error en el servidor",
+                mensaje: "Error en la petición",
                 err
             })
         }

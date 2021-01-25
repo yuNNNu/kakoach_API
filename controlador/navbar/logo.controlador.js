@@ -93,7 +93,7 @@ let editarData = (req, res) => {
         if(err){
             return res.json({
                 status: 500,
-                mensaje: "Error en el servidor",
+                mensaje: "Error en la petición",
                 err
             })
         }
@@ -273,7 +273,7 @@ let createData = (req, res) => {
 
     if(!req.files){
         return res.json({
-            status: 500,
+            status: 400,
             mensaje: "La imagen no puede ir vacía"
         })
     }
@@ -320,7 +320,7 @@ let createData = (req, res) => {
         if(err){
             return res.json({
                 status: 500,
-                mensaje: "Error al guardar la imagen",
+                mensaje: "Error en la petición",
                 err
             })
         }

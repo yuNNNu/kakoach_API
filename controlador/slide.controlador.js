@@ -14,7 +14,7 @@ let mostrarSlide = (req, res) =>{
 			if(err){
 				return res.json({
 					status: 500,
-					mensaje: "Error en la peticion"
+					mensaje: "Error en la petición"
 				})		
 			}
 

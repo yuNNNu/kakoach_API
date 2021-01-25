@@ -76,7 +76,7 @@ let updateBenefits = (req, res) =>  {
             if (err) {
                 return res.json({
                     status: 500,
-                    mensaje: "Error en el servidor",
+                    mensaje: "Error en la petición",
                     err
                 })
             }
