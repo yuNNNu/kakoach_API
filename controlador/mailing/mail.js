@@ -1,6 +1,54 @@
 var nodemailer = require("nodemailer")
 const Clientes = require('../../modelo/usuarios/clientess.modelo');
+const axios = require('axios');
 require('../../config')
+
+function traerData(callback)
+{
+  
+  // GET LINK SOCIALMEDIA
+  axios.get(process.env.RUTAAPI + "get-socialmedia",
+  {
+    headers: {
+      "Content-type": "application/json; charset=UTF-8"
+    }
+  }
+  ).then((x) =>
+  {
+    
+    let socialMedia = x.data.data;
+     instagram1 = socialMedia[0]["url"];
+    facebook1 = socialMedia[1]["url"];
+    youtube1 = socialMedia[2]["url"];
+    twitter1 = socialMedia[3]["url"];
+    let obj = {
+      instagram: instagram1,
+      facebook: facebook1,
+      youtube: youtube1,
+      twitter:twitter1
+    }
+    console.log("🚀 ~ file: mail.js ~ line 29 ~ obj", obj)
+    callback(obj)
+  })
+}
+let instagram;
+let facebook;
+let youtube;
+let twitter;
+function guardarData(data)
+{
+  console.log("🚀 ~ file: mail.js ~ line 36 ~ data", data)
+  instagram = data.instagram;
+  facebook = data.facebook;
+  youtube = data.youtube;
+  twitter = data.twitter;
+  console.log("🚀 ~ file: mail.js ~ line 36 ~ data", twitter)
+
+}
+
+traerData(guardarData)
+console.log("🚀 ~ final twitter", twitter)
+
 // MAIL DE COMPRA CON PDF
 let sendEmail = (req, res) =>
 {
@@ -147,17 +195,7 @@ let sendEmail = (req, res) =>
                                                 </div>
                                               </td>
                                             </tr>
-                                            <tr>
-                                              <td align='center' style='font-size:0px;padding:10px 25px;word-break:break-word;' vertical-align='middle'>
-                                                <table border='0' cellpadding='0' cellspacing='0' role='presentation' style='border-collapse:separate;line-height:100%;width:200px;'>
-                                                  <tr>
-                                                    <td align='center' bgcolor='#0061F2' role='presentation' style='background-color:#0061F2;border:none;border-radius:4px;cursor:auto;padding:10px 0px; width: auto;' valign='middle'>
-                                                    
-                                                    </td>
-                                                  </tr>
-                                                </table>
-                                              </td>
-                                            </tr>
+                                           
                                           </table>
                                         </div>
                                         <!--[if mso | IE]>
@@ -192,22 +230,22 @@ let sendEmail = (req, res) =>
                                                     <tr align='center'>
                                                     <!--
                                                         <td align='center'>
-                                                        <a href='https://www.instagram.com/ka.koach/'>
+                                                        <a href='${instagram}'>
                                                           <img alt='instagram' height='50px' style='background-color: #343A40;' src='${linklogoinstagram}' width='50px'>
                                                         </a>
                                                       </td>
                                                       <td align='center'>
-                                                        <a href='/'>
+                                                        <a href='${facebook}'>
                                                           <img alt='facebook' height='50px' style='background-color: #343A40;' src='${linklogofacebook}' width='50px'>
                                                         </a>
                                                       </td>
                                                       <td align='center'>
-                                                        <a href='/'>
+                                                        <a href='${youtube}'>
                                                           <img alt='youtube' height='50px' style='background-color: #343A40;' src='${linklogoyoutube}' width='50px'>
                                                         </a>
                                                       </td>
                                                         <td align='center'>
-                                                        <a href='/'>
+                                                        <a href='${twitter}'>
                                                           <img alt='twitter' height='50px' style='background-color: #343A40;' src='${linklogotwitter}' width='50px'>
                                                         </a>
                                                       </td>
@@ -399,7 +437,7 @@ let recuperarPass = (req, res) => {
             console.log(" Enviado email")
             // AQUI DEBEMOS ENVIAR EL CORREO AL MAIL REGISTRADO POR EL USUARIO, desde el req.body
             let link = process.env.RUTAHOST + 'nueva-contrasena/' + token;
-            let linklogo = process.env.RUTAAPI + 'mostrar-logo/logomessage.png';
+            let linklogo = process.env.RUTAAPI + 'mostrar-logo/logo.png';
             let linklogoinstagram = process.env.RUTAAPI + 'mostrar-socialmedia-logo/instagram.png';
             let linklogofacebook = process.env.RUTAAPI + 'mostrar-socialmedia-logo/facebook.png';
             let linklogoyoutube = process.env.RUTAAPI + 'mostrar-socialmedia-logo/youtube.png';
@@ -559,22 +597,22 @@ let recuperarPass = (req, res) => {
                                                     <tr align='center'>
                                                     <!--
                                                         <td align='center'>
-                                                        <a href='https://www.instagram.com/ka.koach/'>
+                                                        <a href='${instagram}'>
                                                           <img alt='instagram' height='50px' style='background-color: #343A40;' src='${linklogoinstagram}' width='50px'>
                                                         </a>
                                                       </td>
                                                       <td align='center'>
-                                                        <a href='/'>
+                                                        <a href='${facebook}'>
                                                           <img alt='facebook' height='50px' style='background-color: #343A40;' src='${linklogofacebook}' width='50px'>
                                                         </a>
                                                       </td>
                                                       <td align='center'>
-                                                        <a href='/'>
+                                                        <a href='${youtube}'>
                                                           <img alt='youtube' height='50px' style='background-color: #343A40;' src='${linklogoyoutube}' width='50px'>
                                                         </a>
                                                       </td>
                                                         <td align='center'>
-                                                        <a href='/'>
+                                                        <a href='${twitter}'>
                                                           <img alt='twitter' height='50px' style='background-color: #343A40;' src='${linklogotwitter}' width='50px'>
                                                         </a>
                                                       </td>
