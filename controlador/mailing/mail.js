@@ -2,6 +2,7 @@ var nodemailer = require("nodemailer")
 const Clientes = require('../../modelo/usuarios/clientess.modelo');
 const axios = require('axios');
 require('../../config')
+const bcrypt = require('bcrypt');
 
 function traerData(callback)
 {
@@ -27,7 +28,6 @@ function traerData(callback)
       youtube: youtube1,
       twitter:twitter1
     }
-    console.log("🚀 ~ file: mail.js ~ line 29 ~ obj", obj)
     callback(obj)
   })
 }
@@ -37,17 +37,14 @@ let youtube;
 let twitter;
 function guardarData(data)
 {
-  console.log("🚀 ~ file: mail.js ~ line 36 ~ data", data)
   instagram = data.instagram;
   facebook = data.facebook;
   youtube = data.youtube;
   twitter = data.twitter;
-  console.log("🚀 ~ file: mail.js ~ line 36 ~ data", twitter)
 
 }
 
 traerData(guardarData)
-console.log("🚀 ~ final twitter", twitter)
 
 // MAIL DE COMPRA CON PDF
 let sendEmail = (req, res) =>
@@ -431,8 +428,43 @@ let recuperarPass = (req, res) => {
                 err
             })
         }
+        let newToken="";
+        const d = bcrypt.hashSync(data._id.toString(), 10).split("/")
+        d.forEach((x) => { newToken = newToken + x; })
+        let newTokenExpire = Date.now()+4000000 ;
+        console.log("🚀 ~ file: mail.js ~ line 435 ~ recuperarPass ~ newTokenExpire", newTokenExpire)
+       
+        
+      
+        
+     
+       
+        
+        let usr = {
+          _id: data._id,
+          nombre: data.nombre,
+          mail: data.mail,
+          verified: data.verified,
+          token: newToken,
+          tokenExpires: newTokenExpire,
+          password: data.password
+          
 
-        let token = data.token;
+        }
+        console.log("🚀 ~ file: mail.js ~ line 454 ~ recuperarPass ~ usr", usr)
+        Clientes.findByIdAndUpdate(data._id, usr, {
+                            new: true, // Con esto me muestra lo que se guardo y no el antiguo
+                            runValidators: true // Con esto me muestra lo que se guardo y no el antiguo           
+        }, (err, res) => {
+          if (err)
+          {
+            console.log("🚀 ~ file: mail.js ~ line 450 ~ recuperarPass ~ err", err)
+            return err
+          }
+          console.log("🚀 ~ file: mail.js ~ line 450 ~ recuperarPass ~ res", res)
+        })
+
+        let token = newToken;
 
             console.log(" Enviado email")
             // AQUI DEBEMOS ENVIAR EL CORREO AL MAIL REGISTRADO POR EL USUARIO, desde el req.body

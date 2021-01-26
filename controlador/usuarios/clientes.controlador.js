@@ -746,7 +746,10 @@ let updateCliente = (req, res) => {
 
 	Clientes.findOne({
 		token: token	
-	}, (err, data) => {
+	}, (err, data) =>
+	{
+		let tk = parseInt(data.tokenExpires)	
+		
 		if(err){
 			return res.json({
 				status: 500,
@@ -754,7 +757,7 @@ let updateCliente = (req, res) => {
 				err
 			})
 		}
-
+		
 		if(!data){
 			return res.json({
 				status: 400,
@@ -762,6 +765,16 @@ let updateCliente = (req, res) => {
 				err
 			})
 		}
+		if (tk < Date.now())
+		{
+			return res.json({
+				status: 400,
+				mensaje: "No ha sido posible cambiar la contraseña, el link ha caducado.",
+				err
+			})
+		}	
+		
+		
 
 		let id = data._id;
 		let password = data.password;
@@ -881,12 +894,15 @@ let loginToken = (req, res) =>
 		})
 
 		let id = data._id
+        console.log("🚀 ~ file: clientes.controlador.js ~ line 897 ~ id", id)
 		/////////////
 		const seconds = 60;
 		let now = (Date.now()+seconds)/1000;
+        console.log("🚀 ~ file: clientes.controlador.js ~ line 900 ~ now", now)
 		let expires = data.tokenExpires/1000;
+        console.log("🚀 ~ file: clientes.controlador.js ~ line 901 ~ expires", expires)
 
-		let test = expires - now;
+		
 
 		if(expires > now){
 			console.log("el token no ha expirado")
@@ -895,8 +911,19 @@ let loginToken = (req, res) =>
 				status: 200,
 				cliente
 			})
-		}else{
-			console.log("el token si ha expirado")
+		} else
+		{
+			Clientes.findByIdAndRemove(id, (err, res) =>
+			{
+				if (err)
+				{
+					res.json({
+					status: 400,
+					mensaje: "Error al eliminar usuario"
+					})
+				}
+			})
+		
 			// TOKEN EXPIRÓ
 			res.json({
 				status: 400,
