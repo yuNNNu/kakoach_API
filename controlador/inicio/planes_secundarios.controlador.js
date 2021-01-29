@@ -155,7 +155,7 @@ let updateSecondaryPlan = (req, res) =>
                 respuesta["res"].json({
                 status: 200,
                 data: respuesta["data"],
-                mensaje: "El plan fue actualizado cone exito!"
+                mensaje: "El plan fue actualizado con éxito!"
                 })
             }).catch((respuesta =>
             {
