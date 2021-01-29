@@ -107,8 +107,8 @@ let editarData = (req, res) => {
 
         }
 
-        let rutaImagen = data.imagen;
 
+        let rutaImagen = "logo.png"
         /*=============================================
             VALIDAMOS QUE EXISTAN CAMBIO DE IMAGEN
         =============================================*/
@@ -128,65 +128,54 @@ let editarData = (req, res) => {
 
                         let respuesta = {
                             res: res,
-                            mensaje: "la imagen debe ser formato JPG o PNG"
+                            mensaje: "la imagen debe ser formato PNG"
                 
                         }
 
                         reject(respuesta);
-                    }
+                    
 
-                    //Validamos el tamaño del archivo
+                        //Validamos el tamaño del archivo
 
-                    if(imagen.size > 2000000){
-
-                        let respuesta = {
-
-                            res: res,
-                            mensaje: "la imagen debe ser inferior a 2MB"
-                        }
-
-                        reject(respuesta);
-                    }
-
-                    //Cambiar nombre al archivo
-
-                    let nombre = "logo";
-
-                    //Capturar la extensión del archivo
-
-                    let extension = imagen.name.split('.').pop();
-
-                    imagen.mv(`./archivos/navbar/logo/${nombre}.${extension}`, err =>{
-
-                        if(err){
+                        if(imagen.size > 2000000){
 
                             let respuesta = {
+
+                                res: res,
+                                mensaje: "la imagen debe ser inferior a 2MB"
+                            }
+
+                            reject(respuesta);
+                        }
+
+                    }else{
+                        
+                         imagen.mv(`./archivos/navbar/logo/logo.png`, err =>{
+
+                            if(err){
+
+                                let respuesta = {
+
+                                    res: res,
+                                    mensaje: "Error al guardar la imagen"
+                                }
+
+                                reject(respuesta);
+
+                            }
+                            resolve(rutaImagen);
+
+                        })    
+                    }
+                      
+                }else{
+                    let respuesta = {
 
                                 res: res,
                                 mensaje: "Error al guardar la imagen"
                             }
 
-                            reject(respuesta);
-
-                        }
-
-                        //Borramos la antigua imagen
-
-                        if(fs.existsSync(`./archivos/navbar/logo/${rutaImagen}`)){
-
-                            fs.unlinkSync(`./archivos/navbar/logo/${rutaImagen}`);
-
-                        }
-
-                        //Damos valor a la nueva imagen
-
-                        rutaImagen = `${nombre}.${extension}`;
-
-                        resolve(rutaImagen);
-
-                    })    
-                }else{
-                    resolve(rutaImagen);
+                    resolve(respuesta);
                 }
             })
         }
