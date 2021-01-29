@@ -210,7 +210,6 @@ let crearData = (req, res) => {
 							facebook = socialMedia[1]["url"];
 							youtube = socialMedia[2]["url"];
 							twitter = socialMedia[3]["url"];
-                            console.log("🚀 ~ file: clientes.controlador.js ~ line 231 ~ clientes.save ~ twitter", twitter)
                         
 
 
@@ -524,7 +523,6 @@ var mailOptions = {
 									res.status(500).send(err.message);
 								} else
 								{
-									console.log("mail enviado")
 									return res.json({
 										status:200,
 										mensaje: "Correo enviado correctamente"
@@ -544,9 +542,9 @@ var mailOptions = {
 
 
 
-				}).catch(respuesta => {
+				}).catch(errr => {
 					
-					console.log(respuesta)
+					console.log(errr)
 				})
 
 			})
@@ -896,18 +894,14 @@ let loginToken = (req, res) =>
 		})
 
 		let id = data._id
-        console.log("🚀 ~ file: clientes.controlador.js ~ line 897 ~ id", id)
 		/////////////
 		const seconds = 60;
 		let now = (Date.now()+seconds)/1000;
-        console.log("🚀 ~ file: clientes.controlador.js ~ line 900 ~ now", now)
 		let expires = data.tokenExpires/1000;
-        console.log("🚀 ~ file: clientes.controlador.js ~ line 901 ~ expires", expires)
 
 		
 
 		if(expires > now){
-			console.log("el token no ha expirado")
 			// TOKEN NO HA EXPIRADO
 			res.json({
 				status: 200,

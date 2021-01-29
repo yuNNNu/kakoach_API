@@ -202,7 +202,6 @@ let createData = (req, res) => {
 
     // SE OBTIENE CUERPO DEL FORMULARIO 
     let body = req.body;
-    console.log("body", body);
     // SE DECLARAN LAS VARIABLES
     let title = body.titulo;
     let desc = body.descripciones;

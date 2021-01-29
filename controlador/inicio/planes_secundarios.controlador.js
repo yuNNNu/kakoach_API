@@ -53,15 +53,12 @@ let updateSecondaryPlan = (req, res) =>
 {
     // caputaramos id de beneficio
     let _id = req.params.id;
-    console.log("🚀 ~ID A EDITAR ~ _id", _id)
     // obtenemos el cuerpo del formulario
     let body = req.body;
     let idPlan = body.id;
-    console.log("🚀 ~ ID NUEVO~ idPlan", idPlan)
     //01  VALIDAMOS EXISTENCIA DE BENEFICIO
     plan.findById(_id, (err, data) =>
     {
-    console.log("🚀 ~ file: planes_secundarios.controlador.js ~ line 62 ~ data", data)
         
     
             //Validammos que no haya error

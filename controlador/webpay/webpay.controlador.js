@@ -42,10 +42,8 @@ let pagar = (req, res) =>
                 {
                     nro = nuevonum();
                 }
-                console.log(" existe")
             } 
             
-            console.log("🚀 ~ file: webpay.controlador.js ~ line 46 ~ nro", nro)
                 // antes de filtrar nro
                 let body = req.body;
                 axios.post(url, {

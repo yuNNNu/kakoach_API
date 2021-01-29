@@ -324,7 +324,6 @@ let sendEmail = (req, res) =>
             res.status(500).send(err.message);
         } else
         {
-            console.log("Email enviado correctamente");
             res.status(200).jsonp(req.body);
         }
 
@@ -361,7 +360,6 @@ let ContactMeMail = (req, res) =>
 	}
     nombreCliente = body.nombre;
     apellidoCliente = body.apellido;
-    console.log(" iniciando proceso de envio de  email de contactame")
     // AQUI DEBEMOS ENVIAR EL CORREO AL MAIL REGISTRADO POR EL USUARIO, desde el req.body
     var mailOptions = {
         from: "KA KOACH",
@@ -386,7 +384,6 @@ let ContactMeMail = (req, res) =>
 		    })
         } else
         {
-            console.log("Email enviado correctamente");
             res.status(200).jsonp({req: req.body, status:200});
         }
 
@@ -432,7 +429,6 @@ let recuperarPass = (req, res) => {
         const d = bcrypt.hashSync(data._id.toString(), 10).split("/")
         d.forEach((x) => { newToken = newToken + x; })
         let newTokenExpire = Date.now()+4000000 ;
-        console.log("🚀 ~ file: mail.js ~ line 435 ~ recuperarPass ~ newTokenExpire", newTokenExpire)
        
         
       
@@ -451,22 +447,18 @@ let recuperarPass = (req, res) => {
           
 
         }
-        console.log("🚀 ~ file: mail.js ~ line 454 ~ recuperarPass ~ usr", usr)
         Clientes.findByIdAndUpdate(data._id, usr, {
                             new: true, // Con esto me muestra lo que se guardo y no el antiguo
                             runValidators: true // Con esto me muestra lo que se guardo y no el antiguo           
         }, (err, res) => {
           if (err)
           {
-            console.log("🚀 ~ file: mail.js ~ line 450 ~ recuperarPass ~ err", err)
             return err
           }
-          console.log("🚀 ~ file: mail.js ~ line 450 ~ recuperarPass ~ res", res)
         })
 
         let token = newToken;
 
-            console.log(" Enviado email")
             // AQUI DEBEMOS ENVIAR EL CORREO AL MAIL REGISTRADO POR EL USUARIO, desde el req.body
             let link = process.env.RUTAHOST + 'nueva-contrasena/' + token;
             let linklogo = process.env.RUTAAPI + 'mostrar-logo/logo.png';
@@ -722,10 +714,7 @@ let recuperarPass = (req, res) => {
                         status: 500,
                         err: err.message
                     })
-                } else
-                {
-                    console.log("Email enviado correctamente");
-                }
+                } 
 
             })
 
