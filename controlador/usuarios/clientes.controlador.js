@@ -69,16 +69,18 @@ let crearData = (req, res) => {
 	// BASE DE MAIL
 	
 	let mail = req.body.mail;
-	var expReg = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
-	var esValido = expReg.test(mail);
-	 var date = Date.parse("") || 0;
+	let expReg = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
+	let esValido = expReg.test(mail);
+	let date = Date.parse("") || 0;
+	let nombre = body.nombre;
+	let apellido = body.apellido;
 	//Obtenemos los datos del formulario para pasarlos al modelo
 
 
 	let clientes = new Clientes({
 	
-		nombre: body.nombre,
-		apellido: body.apellido,
+		nombre: nombre.toLowerCase(),
+		apellido: apellido.toLowerCase(),
 		mail: body.mail,
 		verified: false,
 		token: "",
